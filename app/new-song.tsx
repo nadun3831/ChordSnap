@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -61,7 +62,7 @@ export default function NewSongScreen() {
 
       try {
         const response = await uploadSong(
-          file.uri,
+          Platform.OS === 'web' && file.file ? file.file : file.uri,
           file.name,
           file.mimeType || 'audio/mpeg',
           file.name.replace(/\.[^/.]+$/, ''),

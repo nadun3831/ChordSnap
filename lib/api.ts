@@ -2,6 +2,8 @@
  * API Client for ChordSnap backend
  */
 
+import { Platform } from 'react-native';
+
 // For Android emulator, use 10.0.2.2 instead of localhost
 // For physical device, use your computer's local IP
 const API_BASE = 'http://localhost:3001';
@@ -37,18 +39,23 @@ export interface ChordsResponse {
  * Upload an audio file and start chord analysis
  */
 export async function uploadSong(
-  fileUri: string,
+  fileInput: string | any,
   fileName: string,
   mimeType: string,
   title?: string,
   artist?: string,
 ): Promise<{ id: string; title: string; status: string }> {
   const formData = new FormData();
-  formData.append('audio', {
-    uri: fileUri,
-    name: fileName,
-    type: mimeType,
-  } as any);
+  
+  if (Platform.OS === 'web' && typeof fileInput !== 'string') {
+    formData.append('audio', fileInput, fileName);
+  } else {
+    formData.append('audio', {
+      uri: fileInput,
+      name: fileName,
+      type: mimeType,
+    } as any);
+  }
 
   if (title) formData.append('title', title);
   if (artist) formData.append('artist', artist);
@@ -56,9 +63,6 @@ export async function uploadSong(
   const response = await fetch(`${API_BASE}/songs`, {
     method: 'POST',
     body: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
   });
 
   if (!response.ok) {
