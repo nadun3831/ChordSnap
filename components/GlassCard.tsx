@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, ViewStyle, StyleSheet } from 'react-native';
+import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native';
 import Colors from '../constants/Colors';
 
 interface GlassCardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   glowColor?: string;
   glow?: boolean;
 }

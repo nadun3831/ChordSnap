@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 import Colors from '../constants/Colors';
 import GlassCard from '../components/GlassCard';
 import { getSong, getSongChords, updateChord, Song, ChordEvent } from '../lib/api';
@@ -33,7 +34,7 @@ export default function PlayerScreen() {
   const [editingChord, setEditingChord] = useState<ChordEvent | null>(null);
   const [editLabel, setEditLabel] = useState('');
 
-  const playbackTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
   // Fetch song data
   useEffect(() => {
@@ -56,26 +57,46 @@ export default function PlayerScreen() {
     }
   };
 
-  // Simulated playback (no actual audio in demo)
+  // Load and unload audio when song changes
   useEffect(() => {
-    if (isPlaying && song) {
-      playbackTimer.current = setInterval(() => {
-        setCurrentTime(prev => {
-          const next = prev + 0.1;
-          if (next >= song.duration) {
-            setIsPlaying(false);
-            return 0;
-          }
-          return next;
-        });
-      }, 100);
-    } else {
-      if (playbackTimer.current) clearInterval(playbackTimer.current);
+    if (song?.audio_url) {
+      loadAudio();
     }
     return () => {
-      if (playbackTimer.current) clearInterval(playbackTimer.current);
+      if (soundRef.current) {
+        soundRef.current.unloadAsync().catch(err => console.log('Unload sound error:', err));
+      }
     };
-  }, [isPlaying, song]);
+  }, [song]);
+
+  const loadAudio = async () => {
+    try {
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+      }
+      const audioUrl = `http://localhost:3001/uploads/${song?.audio_url}`;
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: audioUrl },
+        { shouldPlay: false },
+        onPlaybackStatusUpdate
+      );
+      soundRef.current = sound;
+    } catch (err) {
+      console.error('Failed to load audio:', err);
+    }
+  };
+
+  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    if (status.isLoaded) {
+      setCurrentTime(status.positionMillis / 1000);
+      setIsPlaying(status.isPlaying);
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        soundRef.current?.setPositionAsync(0).catch(() => {});
+      }
+    }
+  };
 
   // Update active chord based on playback position
   useEffect(() => {
@@ -91,17 +112,32 @@ export default function PlayerScreen() {
     setActiveChordIndex(idx);
   }, [currentTime, chords]);
 
-  const togglePlayback = () => setIsPlaying(prev => !prev);
-
-  const skipForward = () => {
-    if (activeChordIndex < chords.length - 1) {
-      setCurrentTime(chords[activeChordIndex + 1].time_seconds);
+  const togglePlayback = async () => {
+    if (!soundRef.current) return;
+    try {
+      if (isPlaying) {
+        await soundRef.current.pauseAsync();
+      } else {
+        await soundRef.current.playAsync();
+      }
+    } catch (err) {
+      console.error('Toggle playback error:', err);
     }
   };
 
-  const skipBackward = () => {
-    if (activeChordIndex > 0) {
-      setCurrentTime(chords[activeChordIndex - 1].time_seconds);
+  const skipForward = async () => {
+    if (soundRef.current && activeChordIndex < chords.length - 1) {
+      const nextTime = chords[activeChordIndex + 1].time_seconds;
+      await soundRef.current.setPositionAsync(nextTime * 1000);
+      setCurrentTime(nextTime);
+    }
+  };
+
+  const skipBackward = async () => {
+    if (soundRef.current && activeChordIndex > 0) {
+      const prevTime = chords[activeChordIndex - 1].time_seconds;
+      await soundRef.current.setPositionAsync(prevTime * 1000);
+      setCurrentTime(prevTime);
     }
   };
 
@@ -140,7 +176,16 @@ export default function PlayerScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <TouchableOpacity
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(tabs)');
+              }
+            }}
+            style={styles.backBtn}
+          >
             <MaterialIcons name="arrow-back" size={22} color={Colors.primary} />
           </TouchableOpacity>
           <Text style={styles.logoText}>ChordSnap</Text>

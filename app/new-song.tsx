@@ -93,7 +93,13 @@ export default function NewSongScreen() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(tabs)');
+              }
+            }}
             style={styles.backBtn}
           >
             <MaterialIcons name="arrow-back" size={24} color={Colors.primary} />
