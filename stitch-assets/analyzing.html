@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChordSnap | AI Processing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Shared Style & Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#5e289b",
+                    "surface": "#131313",
+                    "primary-fixed": "#b7eaff",
+                    "surface-dim": "#131313",
+                    "secondary-container": "#602b9d",
+                    "primary-container": "#00d1ff",
+                    "tertiary-fixed-dim": "#17deca",
+                    "primary": "#a4e6ff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "outline": "#859399",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary": "#003543",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary": "#dab9ff",
+                    "on-primary-fixed": "#001f28",
+                    "outline-variant": "#3c494e",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary-fixed": "#2a0053",
+                    "on-primary-container": "#00566a",
+                    "tertiary-fixed": "#4ffbe6",
+                    "on-tertiary": "#003731",
+                    "on-tertiary-fixed": "#00201c",
+                    "inverse-surface": "#e5e2e1",
+                    "on-secondary-container": "#cfa7ff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#005850",
+                    "secondary-fixed-dim": "#dab9ff",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#353534",
+                    "surface-container": "#201f1f",
+                    "on-secondary": "#460283",
+                    "surface-container-high": "#2a2a2a",
+                    "on-surface": "#e5e2e1",
+                    "tertiary-container": "#00d7c3",
+                    "on-background": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "tertiary": "#45f4df",
+                    "inverse-primary": "#00677f",
+                    "surface-bright": "#393939",
+                    "on-error": "#690005",
+                    "secondary-fixed": "#eedbff",
+                    "background": "#131313",
+                    "primary-fixed-dim": "#4cd6ff",
+                    "surface-variant": "#353534",
+                    "surface-tint": "#4cd6ff",
+                    "on-primary-fixed-variant": "#004e60"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "24px",
+                    "xs": "4px",
+                    "xl": "40px",
+                    "gutter": "16px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "base": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Montserrat"],
+                    "display-chord": ["Montserrat"],
+                    "headline-lg-mobile": ["Montserrat"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Montserrat"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-chord": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.6; }
+            100% { transform: scale(0.95); opacity: 0.3; }
+        }
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes wave-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .ai-processing-gradient {
+            background: radial-gradient(circle at center, rgba(187, 134, 252, 0.08) 0%, rgba(19, 19, 19, 1) 70%);
+            animation: wave-bg 8s ease infinite;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .synth-purple-glow {
+            filter: drop-shadow(0 0 12px #BB86FC);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<!-- Top Navigation (Shell suppressed during processing per task rules, but header identity retained) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-margin h-16 border-b border-white/15 bg-surface/50 backdrop-blur-xl">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+<h1 class="font-display-chord text-primary tracking-tighter text-headline-lg-mobile">ChordSnap</h1>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a modern musician, low-key lighting with subtle blue and purple rim lights, sharp focus, technical noir aesthetic, high-end photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCqH4IQpqntmzbPhfYkQEyTWFogOTa98HKh0fSDqQzum6HP6KLyS_3D1FfnKhjhCbGNGrfZG1Zhcg7_U93s6qc6NMH1fUqE-WMDnsFygq3ZJP3vyKnfFZezhZEMRjgcD7CfvCrUuQTDBr3h5_C3RDeKLD7Sqr0qwp__ZjpTl8S0ZWWlXwbAgCmxjbK_17L8fCfR2T4pOUv1fzr-PPYdohW8tyo06dZbEv7CMYBxa8jVLbd3sjlPJEzLDINVR9RC8Qu17WLUkHFQwFV"/>
+</div>
+</header>
+<!-- Main Processing Canvas -->
+<main class="relative h-screen w-full flex items-center justify-center ai-processing-gradient px-gutter">
+<!-- Animated Background Pulse Waves -->
+<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-secondary/10 rounded-full animate-[pulse-ring_4s_ease-in-out_infinite]"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-secondary/5 rounded-full animate-[pulse-ring_6s_ease-in-out_infinite_1s]"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-secondary/15 rounded-full animate-[pulse-ring_3s_ease-in-out_infinite_0.5s]"></div>
+</div>
+<!-- Central Processing Hub -->
+<div class="relative z-10 flex flex-col items-center max-w-md w-full">
+<!-- High-Energy Circular Indicator -->
+<div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center mb-xl">
+<!-- Background Ring -->
+<svg class="absolute w-full h-full">
+<circle cx="50%" cy="50%" fill="transparent" r="45%" stroke="rgba(255,255,255,0.05)" stroke-width="8"></circle>
+</svg>
+<!-- Active Progress Ring -->
+<svg class="absolute w-full h-full synth-purple-glow">
+<circle class="progress-ring-circle" cx="50%" cy="50%" fill="transparent" id="progress-circle" r="45%" stroke="#dab9ff" stroke-dasharray="1000" stroke-dashoffset="150" stroke-linecap="round" stroke-width="8">
+</circle>
+</svg>
+<!-- Rotating AI Particles Decor -->
+<div class="absolute w-full h-full animate-[rotate-slow_10s_linear_infinite]">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_#00d1ff]"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_#00d1ff]"></div>
+</div>
+<!-- Central Percentage Text -->
+<div class="flex flex-col items-center">
+<span class="font-display-chord text-primary text-display-chord drop-shadow-sm" id="percent-display">85%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-widest">ANALYZING AUDIO</span>
+</div>
+</div>
+<!-- Status Messaging Card -->
+<div class="glass-panel w-full rounded-xl p-lg space-y-md text-center">
+<div class="flex flex-col items-center gap-base" id="status-container">
+<span class="material-symbols-outlined text-secondary animate-pulse" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-headline-md text-headline-md text-on-surface" id="status-text">Syncing Beats...</h2>
+<p class="font-body-md text-on-surface-variant opacity-70">Our AI engine is isolating instrument tracks and mapping harmonic structures for studio-grade accuracy.</p>
+</div>
+<!-- Mini Activity Tickers -->
+<div class="flex justify-center gap-md pt-md border-t border-white/10">
+<div class="flex items-center gap-xs">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Harmonics: OK</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">DSP: ACTIVE</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">BPM: LOCK</span>
+</div>
+</div>
+</div>
+<!-- Aesthetic Wave Visualizer (Bottom) -->
+<div class="mt-xl w-full h-12 flex items-end justify-center gap-1">
+<div class="w-1 bg-primary/30 rounded-full animate-[pulse-ring_1.2s_ease-in-out_infinite]" style="height: 40%"></div>
+<div class="w-1 bg-primary/40 rounded-full animate-[pulse-ring_1.5s_ease-in-out_infinite_0.1s]" style="height: 60%"></div>
+<div class="w-1 bg-primary/60 rounded-full animate-[pulse-ring_1.1s_ease-in-out_infinite_0.2s]" style="height: 90%"></div>
+<div class="w-1 bg-primary/80 rounded-full animate-[pulse-ring_1.4s_ease-in-out_infinite_0.3s]" style="height: 100%"></div>
+<div class="w-1 bg-primary/60 rounded-full animate-[pulse-ring_1.2s_ease-in-out_infinite_0.4s]" style="height: 90%"></div>
+<div class="w-1 bg-primary/40 rounded-full animate-[pulse-ring_1.3s_ease-in-out_infinite_0.5s]" style="height: 60%"></div>
+<div class="w-1 bg-primary/30 rounded-full animate-[pulse-ring_1.6s_ease-in-out_infinite_0.6s]" style="height: 40%"></div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation suppressed as per processing state requirement -->
+<script>
+        // Micro-interactions for the processing screen
+        const percentDisplay = document.getElementById('percent-display');
+        const statusText = document.getElementById('status-text');
+        const progressCircle = document.getElementById('progress-circle');
+
+        const statuses = [
+            "Extracting Harmonics...",
+            "Syncing Beats...",
+            "Mapping Voicings...",
+            "Isolating Basslines...",
+            "Generating Lead Sheets...",
+            "Finalizing Transcription..."
+        ];
+
+        let progress = 85;
+        const radius = progressCircle.r.baseVal.value;
+        const circumference = 2 * Math.PI * 100; // Simplified for CSS dasharray usage context
+
+        function updateProgress() {
+            if (progress < 100) {
+                progress += Math.random() * 0.5;
+                if (progress > 100) progress = 100;
+                
+                percentDisplay.innerText = Math.floor(progress) + "%";
+                
+                // Update dashoffset
+                // SVG dasharray/offset logic usually depends on total length
+                const totalLength = 1000; // matching the attribute
+                const offset = totalLength - (progress / 100 * totalLength);
+                progressCircle.style.strokeDashoffset = offset;
+
+                // Randomly change status text
+                if (Math.random() > 0.98) {
+                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    if(statusText.innerText !== randomStatus) {
+                        statusText.style.opacity = 0;
+                        setTimeout(() => {
+                            statusText.innerText = randomStatus;
+                            statusText.style.opacity = 1;
+                        }, 200);
+                    }
+                }
+            } else {
+                statusText.innerText = "Processing Complete!";
+                statusText.classList.add('text-primary');
+            }
+            requestAnimationFrame(updateProgress);
+        }
+
+        // Initial set
+        progressCircle.style.transition = 'stroke-dashoffset 0.5s ease-out, opacity 0.5s ease';
+        updateProgress();
+
+        // Atmospheric Pulsing Logic via JS to keep it dynamic
+        document.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const deltaX = (e.clientX - centerX) / 50;
+            const deltaY = (e.clientY - centerY) / 50;
+            
+            document.querySelector('.ai-processing-gradient').style.backgroundPosition = `${50 + deltaX}% ${50 + deltaY}%`;
+        });
+    </script>
+</body></html>

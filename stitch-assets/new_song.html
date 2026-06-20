@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChordSnap - Record &amp; Upload</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#5e289b",
+                    "surface": "#131313",
+                    "primary-fixed": "#b7eaff",
+                    "surface-dim": "#131313",
+                    "secondary-container": "#602b9d",
+                    "primary-container": "#00d1ff",
+                    "tertiary-fixed-dim": "#17deca",
+                    "primary": "#a4e6ff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "outline": "#859399",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary": "#003543",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary": "#dab9ff",
+                    "on-primary-fixed": "#001f28",
+                    "outline-variant": "#3c494e",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary-fixed": "#2a0053",
+                    "on-primary-container": "#00566a",
+                    "tertiary-fixed": "#4ffbe6",
+                    "on-tertiary": "#003731",
+                    "on-tertiary-fixed": "#00201c",
+                    "inverse-surface": "#e5e2e1",
+                    "on-secondary-container": "#cfa7ff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#005850",
+                    "secondary-fixed-dim": "#dab9ff",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#353534",
+                    "surface-container": "#201f1f",
+                    "on-secondary": "#460283",
+                    "surface-container-high": "#2a2a2a",
+                    "on-background": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "tertiary": "#45f4df",
+                    "inverse-primary": "#00677f",
+                    "surface-bright": "#393939",
+                    "on-error": "#690005",
+                    "secondary-fixed": "#eedbff",
+                    "background": "#131313",
+                    "primary-fixed-dim": "#4cd6ff",
+                    "surface-variant": "#353534",
+                    "surface-tint": "#4cd6ff",
+                    "on-primary-fixed-variant": "#004e60"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "24px",
+                    "xs": "4px",
+                    "xl": "40px",
+                    "gutter": "16px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "base": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Montserrat"],
+                    "display-chord": ["Montserrat"],
+                    "headline-lg-mobile": ["Montserrat"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Montserrat"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-chord": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-pulse {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(187, 134, 252, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(187, 134, 252, 0.25); }
+        }
+
+        .waveform-bar {
+            transition: height 0.1s ease;
+        }
+
+        .recording-state .mic-icon {
+            color: #ffb4ab;
+            animation: breathe 1.5s infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.95); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 bg-surface/50 backdrop-blur-xl border-b border-white/15 flex justify-between items-center px-container-margin h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-white/10 p-2 rounded-full transition-colors active:scale-95 duration-200" onclick="history.back()">
+                arrow_back
+            </button>
+<h1 class="font-display-chord text-primary tracking-tighter text-headline-lg-mobile md:text-headline-lg">ChordSnap</h1>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden ring-2 ring-white/10">
+<img class="w-full h-full object-cover" data-alt="A cinematic, high-detail portrait of a modern musician wearing studio headphones, bathed in moody neon purple and electric blue lighting against a dark, technical background. The style is hyper-realistic and polished, reflecting a high-performance recording environment with soft bokeh of studio gear in the distance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChlbe0W636FT7ACJ8x6L0YAdprdqZA6nGM9h2RrmDOu5OHtK7v8D1yOIyfFWAENrLtRlKMP1_oaVeP8CYNCHkC4AynJYk65WoNOj9RWYR0ihLdTWH23wTw8LnP7TY9W70souCLX9gw3Ouz3K7jaRneHAKv_-7ESjN3ciXns0kpB87XfHVuoeQvlFDOrA_IMwVxh4nBtVFvUMfOkDvmFf9TiCDOdFW7IhOBzeorWcluZiegrIUvMVqaWZsHOTTmFUqA2r-Oi0mX-BG9"/>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 pt-24 pb-32 px-container-margin max-w-4xl mx-auto w-full flex flex-col gap-lg">
+<!-- Welcome Header -->
+<div class="text-center md:text-left">
+<h2 class="font-headline-lg text-on-surface mb-2">New Session</h2>
+<p class="text-on-surface-variant font-body-md">Capture live audio or upload a recording for instant chord analysis.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg h-full">
+<!-- Record Section -->
+<section class="glass-card rounded-xl p-lg flex flex-col items-center justify-between min-h-[320px] transition-all duration-300 hover:border-primary/40 group relative overflow-hidden" id="recordCard">
+<div class="absolute top-4 left-4">
+<span class="font-label-sm text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Live AI</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center gap-md">
+<button class="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-lg shadow-primary/20 active:scale-90 transition-all duration-200" id="recordToggle">
+<span class="material-symbols-outlined text-[48px]" id="micIcon" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<div class="text-center">
+<h3 class="font-headline-md text-on-surface">Record Audio</h3>
+<p class="text-on-surface-variant text-label-sm mt-1" id="recordStatus">Tap to start listening</p>
+</div>
+</div>
+<!-- Animated Microphone Waveform (Bottom Anchor) -->
+<div class="w-full h-16 flex items-end justify-center gap-1 overflow-hidden px-md">
+<div class="waveform-bar w-1 bg-primary/20 rounded-full h-2"></div>
+<div class="waveform-bar w-1 bg-primary/30 rounded-full h-4"></div>
+<div class="waveform-bar w-1 bg-primary/40 rounded-full h-8"></div>
+<div class="waveform-bar w-1 bg-primary/60 rounded-full h-12"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full h-6"></div>
+<div class="waveform-bar w-1 bg-primary/80 rounded-full h-10"></div>
+<div class="waveform-bar w-1 bg-primary/60 rounded-full h-14"></div>
+<div class="waveform-bar w-1 bg-primary/40 rounded-full h-8"></div>
+<div class="waveform-bar w-1 bg-primary/30 rounded-full h-4"></div>
+<div class="waveform-bar w-1 bg-primary/20 rounded-full h-2"></div>
+</div>
+</section>
+<!-- Upload Section -->
+<section class="glass-card rounded-xl p-lg flex flex-col items-center justify-center gap-lg min-h-[320px] transition-all duration-300 border-dashed hover:border-primary/40 group">
+<div class="w-20 h-20 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary text-[40px]">upload_file</span>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-on-surface">Upload File</h3>
+<p class="text-on-surface-variant text-body-md mt-2">MP3, WAV, or M4A supported</p>
+<p class="text-label-sm text-outline mt-1 italic">Max file size: 50MB</p>
+</div>
+<label class="cursor-pointer w-full">
+<input accept=".mp3,.wav,.m4a" class="hidden" type="file"/>
+<div class="bg-white/10 text-on-surface font-headline-md flex items-center justify-center px-lg py-4 rounded-xl border border-white/20 hover:bg-white/20 hover:border-primary active:scale-95 transition-all duration-200">
+                        Choose File
+                    </div>
+</label>
+</section>
+</div>
+<!-- Recent Activity / Info -->
+<div class="mt-xl glass-card rounded-xl p-md flex items-center gap-md">
+<div class="p-2 bg-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary">info</span>
+</div>
+<div>
+<p class="text-on-surface font-body-md">Did you know?</p>
+<p class="text-on-surface-variant text-label-sm">ChordSnap's AI can distinguish over 2,000 chord variations in real-time with 98% accuracy.</p>
+</div>
+</div>
+</main>
+<!-- Navigation Shell Suppressed as per Task Logic (Focused Journey) -->
+<!-- But if BottomNavBar was required, it would sit here -->
+<script>
+        // Micro-interactions for the recording state
+        const recordBtn = document.getElementById('recordToggle');
+        const recordCard = document.getElementById('recordCard');
+        const recordStatus = document.getElementById('recordStatus');
+        const micIcon = document.getElementById('micIcon');
+        const waveformBars = document.querySelectorAll('.waveform-bar');
+        
+        let isRecording = false;
+        let animationInterval;
+
+        function startWaveform() {
+            animationInterval = setInterval(() => {
+                waveformBars.forEach(bar => {
+                    const randomHeight = Math.floor(Math.random() * 40) + 10;
+                    bar.style.height = `${randomHeight}px`;
+                    bar.classList.replace('bg-primary/20', 'bg-primary');
+                });
+            }, 100);
+        }
+
+        function stopWaveform() {
+            clearInterval(animationInterval);
+            waveformBars.forEach(bar => {
+                bar.style.height = '8px';
+                bar.classList.add('bg-primary/20');
+            });
+        }
+
+        recordBtn.addEventListener('click', () => {
+            isRecording = !isRecording;
+            
+            if (isRecording) {
+                recordCard.classList.add('ai-pulse', 'border-primary/60');
+                recordBtn.classList.replace('bg-primary', 'bg-error-container');
+                recordBtn.classList.replace('text-on-primary', 'text-on-error-container');
+                micIcon.innerText = 'stop';
+                recordStatus.innerText = 'Recording... (0:04)';
+                recordStatus.classList.add('text-error');
+                startWaveform();
+            } else {
+                recordCard.classList.remove('ai-pulse', 'border-primary/60');
+                recordBtn.classList.replace('bg-error-container', 'bg-primary');
+                recordBtn.classList.replace('text-on-error-container', 'text-on-primary');
+                micIcon.innerText = 'mic';
+                recordStatus.innerText = 'Tap to start listening';
+                recordStatus.classList.remove('text-error');
+                stopWaveform();
+            }
+        });
+
+        // Interactive hover states for desktop
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+    </script>
+</body></html>
