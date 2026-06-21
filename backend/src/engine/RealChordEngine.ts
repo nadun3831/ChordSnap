@@ -2,79 +2,194 @@ import fs from 'fs';
 import { ChordDetectionEngine, ChordEvent } from './ChordDetectionEngine';
 
 /**
- * RealChordEngine — Beat-aligned chord detection
+ * RealChordEngine — Beat-aligned chord detection with KEY DETECTION
  *
  * Pipeline:
  *   1. Decode audio to mono PCM
  *   2. Detect tempo (BPM) via onset strength + autocorrelation
  *   3. Build beat grid — exact timestamps where each beat falls
- *   4. Extract chroma (12-bin pitch class energy) per beat window
- *   5. Match each beat's chroma against chord templates
- *   6. Merge consecutive identical chords into timed events
- *
- * This approach gives chords at the RIGHT TIME because music
- * changes chords on beat boundaries, not at arbitrary intervals.
+ *   4. Extract chroma (12-bin pitch class energy) per beat
+ *   5. DETECT KEY from overall chroma distribution (Krumhansl-Kessler)
+ *   6. Filter chord templates to only key-compatible chords
+ *   7. Match each bar's chroma against filtered templates
+ *   8. Merge consecutive identical chords into timed events
  */
 
 // ─────────────────────────────────────────────
-// Chord Templates — weighted profiles for each chord type
-// Indices: [C, C#, D, D#, E, F, F#, G, G#, A, A#, B]
-// Root gets higher weight to reflect acoustic reality
+// Note names & constants
+// ─────────────────────────────────────────────
+const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+// ─────────────────────────────────────────────
+// Key Detection — Krumhansl-Kessler key profiles
+// These represent how strongly each pitch class correlates
+// with a given key. Used to detect the song's key from
+// the overall chroma distribution.
 // ─────────────────────────────────────────────
 
-const CHORD_TYPES: Record<string, { profile: number[]; bias: number }> = {
-  // Major triad: root, M3, P5 — most common, strong preference
-  'maj': {
-    profile: [1.5, 0, 0, 0, 1.0, 0, 0, 1.2, 0, 0, 0, 0],
-    bias: 0.06,
-  },
-  // Minor triad: root, m3, P5 — very common
-  'm': {
-    profile: [1.5, 0, 0, 1.0, 0, 0, 0, 1.2, 0, 0, 0, 0],
-    bias: 0.06,
-  },
-  // Dominant 7th: root, M3, P5, m7
-  '7': {
-    profile: [1.5, 0, 0, 0, 1.0, 0, 0, 1.2, 0, 0, 0.7, 0],
-    bias: -0.02,
-  },
-  // Minor 7th: root, m3, P5, m7
-  'm7': {
-    profile: [1.5, 0, 0, 1.0, 0, 0, 0, 1.2, 0, 0, 0.7, 0],
-    bias: -0.02,
-  },
-  // Major 7th: root, M3, P5, M7
-  'maj7': {
-    profile: [1.5, 0, 0, 0, 1.0, 0, 0, 1.2, 0, 0, 0, 0.7],
-    bias: -0.05, // strong penalty — very often false positive over plain major
-  },
-  // Suspended 4th: root, P4, P5
-  'sus4': {
-    profile: [1.5, 0, 0, 0, 0, 1.0, 0, 1.2, 0, 0, 0, 0],
-    bias: -0.04,
-  },
-};
+// Major key profile (rooted at C)
+const MAJOR_PROFILE = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88];
+// Minor key profile (rooted at C)
+const MINOR_PROFILE = [6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
 
-const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+interface KeyResult {
+  root: number;       // 0=C, 1=C#, ..., 11=B
+  mode: 'major' | 'minor';
+  name: string;       // e.g. "Em", "C"
+  correlation: number;
+}
+
+/**
+ * Detect key using Krumhansl-Kessler algorithm.
+ * Correlates overall chroma distribution against rotated key profiles.
+ */
+function detectKey(overallChroma: number[]): KeyResult {
+  // Normalize chroma
+  const sum = overallChroma.reduce((s, v) => s + v, 0);
+  const chroma = sum > 0 ? overallChroma.map(v => v / sum) : new Array(12).fill(0);
+
+  let bestRoot = 0;
+  let bestMode: 'major' | 'minor' = 'major';
+  let bestCorr = -Infinity;
+
+  for (let root = 0; root < 12; root++) {
+    // Rotate the profile to this root
+    for (const [mode, profile] of [['major', MAJOR_PROFILE], ['minor', MINOR_PROFILE]] as const) {
+      const rotated: number[] = new Array(12);
+      for (let i = 0; i < 12; i++) {
+        rotated[(i + root) % 12] = profile[i];
+      }
+
+      // Pearson correlation between chroma and rotated profile
+      const meanC = chroma.reduce((s, v) => s + v, 0) / 12;
+      const meanP = rotated.reduce((s, v) => s + v, 0) / 12;
+
+      let num = 0, denC = 0, denP = 0;
+      for (let i = 0; i < 12; i++) {
+        const dc = chroma[i] - meanC;
+        const dp = rotated[i] - meanP;
+        num += dc * dp;
+        denC += dc * dc;
+        denP += dp * dp;
+      }
+
+      const corr = (denC > 0 && denP > 0) ? num / Math.sqrt(denC * denP) : 0;
+
+      if (corr > bestCorr) {
+        bestCorr = corr;
+        bestRoot = root;
+        bestMode = mode;
+      }
+    }
+  }
+
+  const name = bestMode === 'minor'
+    ? `${NOTE_NAMES[bestRoot]}m`
+    : NOTE_NAMES[bestRoot];
+
+  return { root: bestRoot, mode: bestMode, name, correlation: bestCorr };
+}
+
+// ─────────────────────────────────────────────
+// Diatonic chord sets per key
+// Given a key root and mode, return the set of chord labels
+// that are diatonic (belong to that key), plus common borrowed chords.
+// ─────────────────────────────────────────────
+
+/**
+ * Build the set of chords that are valid for a given key.
+ *
+ * Major key (e.g. C major): I, ii, iii, IV, V, vi  + V7
+ *   C: C, Dm, Em, F, G, Am + G7
+ *
+ * Minor key (e.g. A minor): i, ii°→ii, III, iv, v/V, VI, VII + V7
+ *   Am: Am, Bm/Bdim→Bm, C, Dm, Em/E, F, G + E7
+ */
+function getDiatonicChords(root: number, mode: 'major' | 'minor'): Set<string> {
+  const chords = new Set<string>();
+  const r = (n: number) => NOTE_NAMES[(root + n) % 12];
+
+  if (mode === 'major') {
+    // I (major)
+    chords.add(r(0));
+    // ii (minor)
+    chords.add(`${r(2)}m`);
+    // iii (minor)
+    chords.add(`${r(4)}m`);
+    // IV (major)
+    chords.add(r(5));
+    // V (major)
+    chords.add(r(7));
+    // vi (minor)
+    chords.add(`${r(9)}m`);
+    // V7 (dominant 7th) — very common
+    chords.add(`${r(7)}7`);
+    // I7 — common passing chord
+    chords.add(`${r(0)}7`);
+    // IV as minor (borrowed from parallel minor) — occasional
+    chords.add(`${r(5)}m`);
+    // bVII (borrowed) — common in pop
+    chords.add(r(10));
+  } else {
+    // i (minor)
+    chords.add(`${r(0)}m`);
+    // ii° — we approximate as ii minor
+    chords.add(`${r(2)}m`);
+    // III (major — relative major)
+    chords.add(r(3));
+    // iv (minor)
+    chords.add(`${r(5)}m`);
+    // v (minor — natural minor)
+    chords.add(`${r(7)}m`);
+    // V (major — harmonic minor, very common)
+    chords.add(r(7));
+    // VI (major)
+    chords.add(r(8));
+    // VII (major — natural minor)
+    chords.add(r(10));
+    // V7 (dominant 7th — very common in minor)
+    chords.add(`${r(7)}7`);
+    // i as major (picardy third, passing)
+    chords.add(r(0));
+    // iv as major — sometimes used
+    chords.add(r(5));
+    // II (borrowed, Neapolitan area)
+    chords.add(r(2));
+  }
+
+  return chords;
+}
+
+// ─────────────────────────────────────────────
+// Chord Templates — weighted profiles
+// Indices: [C, C#, D, D#, E, F, F#, G, G#, A, A#, B]
+// ─────────────────────────────────────────────
+
+const CHORD_TYPES: Record<string, number[]> = {
+  'maj': [1.5, 0, 0, 0, 1.0, 0, 0, 1.2, 0, 0, 0, 0],
+  'm':   [1.5, 0, 0, 1.0, 0, 0, 0, 1.2, 0, 0, 0, 0],
+  '7':   [1.5, 0, 0, 0, 1.0, 0, 0, 1.2, 0, 0, 0.7, 0],
+  'm7':  [1.5, 0, 0, 1.0, 0, 0, 0, 1.2, 0, 0, 0.7, 0],
+};
 
 interface ChordTemplate {
   label: string;
+  rootNote: number;
   profile: number[];
-  bias: number;
 }
 
 function buildAllTemplates(): ChordTemplate[] {
   const templates: ChordTemplate[] = [];
-  for (const [typeName, { profile, bias }] of Object.entries(CHORD_TYPES)) {
+  for (const [typeName, baseProfile] of Object.entries(CHORD_TYPES)) {
     for (let root = 0; root < 12; root++) {
       const rotated = new Array(12);
       for (let i = 0; i < 12; i++) {
-        rotated[(i + root) % 12] = profile[i];
+        rotated[(i + root) % 12] = baseProfile[i];
       }
       const label = typeName === 'maj'
         ? NOTE_NAMES[root]
         : `${NOTE_NAMES[root]}${typeName}`;
-      templates.push({ label, profile: rotated, bias });
+      templates.push({ label, rootNote: root, profile: rotated });
     }
   }
   return templates;
@@ -83,7 +198,7 @@ function buildAllTemplates(): ChordTemplate[] {
 const ALL_TEMPLATES = buildAllTemplates();
 
 // ─────────────────────────────────────────────
-// Similarity helpers
+// Similarity & matching
 // ─────────────────────────────────────────────
 
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -98,18 +213,28 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 function normalizeChroma(chroma: number[]): number[] {
-  const sum = chroma.reduce((s, v) => s + v, 0);
-  if (sum < 0.001) return new Array(12).fill(0);
-  return chroma.map(v => v / sum);
+  const max = Math.max(...chroma);
+  if (max < 0.001) return new Array(12).fill(0);
+  return chroma.map(v => v / max);
 }
 
-function matchChord(chroma: number[]): { label: string; confidence: number } {
+/**
+ * Match chroma against ONLY the chords allowed by the key.
+ * This is the key improvement — we don't consider G#m in a song in Em, etc.
+ */
+function matchChordInKey(
+  chroma: number[],
+  allowedChords: Set<string>,
+): { label: string; confidence: number } {
   const normalized = normalizeChroma(chroma);
   let bestLabel = 'N';
   let bestScore = -1;
 
+  // Filter templates to only allowed chords
   for (const tmpl of ALL_TEMPLATES) {
-    const score = cosineSimilarity(normalized, tmpl.profile) + tmpl.bias;
+    if (!allowedChords.has(tmpl.label)) continue;
+
+    const score = cosineSimilarity(normalized, tmpl.profile);
     if (score > bestScore) {
       bestScore = score;
       bestLabel = tmpl.label;
@@ -120,19 +245,15 @@ function matchChord(chroma: number[]): { label: string; confidence: number } {
 }
 
 // ─────────────────────────────────────────────
-// Beat detection helpers
+// Beat detection
 // ─────────────────────────────────────────────
 
 const FRAME_SIZE = 1024;
 const HOP = 512;
 const MIN_BPM = 40;
 const MAX_BPM = 220;
-const MIN_CONFIDENCE = 0.60;
+const MIN_CONFIDENCE = 0.55;
 
-/**
- * Compute onset strength envelope from audio samples.
- * Uses spectral flux — increase in spectral energy between frames.
- */
 function computeOnsetEnvelope(samples: Float32Array, sampleRate: number): { envelope: number[]; times: number[] } {
   const envelope: number[] = [];
   const times: number[] = [];
@@ -141,8 +262,6 @@ function computeOnsetEnvelope(samples: Float32Array, sampleRate: number): { enve
   for (let offset = 0; offset + FRAME_SIZE <= samples.length; offset += HOP) {
     const frame = samples.slice(offset, offset + FRAME_SIZE);
 
-    // Simple magnitude spectrum via squared values in frequency bands
-    // We don't need full FFT — use band energy approximation
     const numBands = 40;
     const bandSize = Math.floor(FRAME_SIZE / numBands);
     const spectrum: number[] = [];
@@ -157,7 +276,6 @@ function computeOnsetEnvelope(samples: Float32Array, sampleRate: number): { enve
     }
 
     if (prevSpectrum) {
-      // Spectral flux: sum of positive differences (half-wave rectified)
       let flux = 0;
       for (let b = 0; b < numBands; b++) {
         const diff = spectrum[b] - prevSpectrum[b];
@@ -173,20 +291,15 @@ function computeOnsetEnvelope(samples: Float32Array, sampleRate: number): { enve
   return { envelope, times };
 }
 
-/**
- * Detect BPM using autocorrelation of onset envelope.
- */
 function detectBPM(envelope: number[], sampleRate: number): number {
-  const hopDuration = HOP / sampleRate; // seconds per onset frame
+  const hopDuration = HOP / sampleRate;
   const minLag = Math.floor(60 / (MAX_BPM * hopDuration));
   const maxLag = Math.floor(60 / (MIN_BPM * hopDuration));
   const N = envelope.length;
 
-  // Mean-normalize envelope
   const mean = envelope.reduce((s, v) => s + v, 0) / N;
   const normed = envelope.map(v => v - mean);
 
-  // Autocorrelation
   let bestLag = minLag;
   let bestCorr = -Infinity;
 
@@ -209,16 +322,12 @@ function detectBPM(envelope: number[], sampleRate: number): number {
   return Math.round(bpm * 10) / 10;
 }
 
-/**
- * Build beat grid: evenly-spaced beat times starting from the first strong onset.
- */
 function buildBeatGrid(
   envelope: number[],
   times: number[],
   bpm: number,
   totalDuration: number,
 ): number[] {
-  // Find first strong onset as starting beat
   const maxOnset = Math.max(...envelope);
   const threshold = maxOnset * 0.15;
 
@@ -230,8 +339,7 @@ function buildBeatGrid(
     }
   }
 
-  // Build grid at beat intervals
-  const beatInterval = 60 / bpm; // seconds per beat
+  const beatInterval = 60 / bpm;
   const beats: number[] = [];
 
   for (let t = firstBeatTime; t < totalDuration; t += beatInterval) {
@@ -242,11 +350,11 @@ function buildBeatGrid(
 }
 
 // ─────────────────────────────────────────────
-// Engine implementation
+// Engine
 // ─────────────────────────────────────────────
 
 export class RealChordEngine implements ChordDetectionEngine {
-  readonly name = 'RealChordEngine (Beat-Aligned)';
+  readonly name = 'RealChordEngine (Beat + Key Detection)';
 
   async analyze(audioPath: string): Promise<ChordEvent[]> {
     console.log(`🎵 RealChordEngine: Analyzing ${audioPath}`);
@@ -283,21 +391,10 @@ export class RealChordEngine implements ChordDetectionEngine {
     console.log(`   🎯 Beat grid: ${beats.length} beats (interval: ${(60 / bpm).toFixed(3)}s)`);
 
     // ── 4. Extract chroma per beat ──
-    // For each beat, average chroma over a window centered on the beat
     const Meyda = require('meyda');
-    const CHROMA_BUFFER = 8192; // larger window = better frequency resolution
+    const CHROMA_BUFFER = 8192;
     Meyda.bufferSize = CHROMA_BUFFER;
     Meyda.sampleRate = sampleRate;
-
-    // Pre-compute: how many samples is one beat?
-    const beatSamples = Math.floor((60 / bpm) * sampleRate);
-    // Analysis window: centered on beat, ~80% of beat duration
-    const windowSamples = Math.min(
-      Math.floor(beatSamples * 0.8),
-      CHROMA_BUFFER
-    );
-    // If window is smaller than CHROMA_BUFFER, we'll zero-pad
-    const useBufferSize = Math.max(windowSamples, CHROMA_BUFFER);
 
     interface BeatChroma {
       beatTime: number;
@@ -306,18 +403,18 @@ export class RealChordEngine implements ChordDetectionEngine {
     }
 
     const beatChromas: BeatChroma[] = [];
+    const overallChroma = new Array(12).fill(0); // accumulate for key detection
+    let chromaCount = 0;
 
     for (const beatTime of beats) {
       const centerSample = Math.floor(beatTime * sampleRate);
-      const halfWindow = Math.floor(useBufferSize / 2);
+      const halfWindow = Math.floor(CHROMA_BUFFER / 2);
       const start = Math.max(0, centerSample - halfWindow);
-      const end = Math.min(samples.length, start + useBufferSize);
 
-      if (end - start < CHROMA_BUFFER) continue; // skip if too near edge
+      if (start + CHROMA_BUFFER > samples.length) continue;
 
       const frame = samples.slice(start, start + CHROMA_BUFFER);
 
-      // Compute energy
       let energy = 0;
       for (let i = 0; i < frame.length; i++) {
         energy += frame[i] * frame[i];
@@ -325,7 +422,6 @@ export class RealChordEngine implements ChordDetectionEngine {
       energy /= frame.length;
 
       if (energy < 1e-6) {
-        // Silence
         beatChromas.push({ beatTime, chroma: new Array(12).fill(0), energy });
         continue;
       }
@@ -333,22 +429,32 @@ export class RealChordEngine implements ChordDetectionEngine {
       try {
         const chroma = Meyda.extract('chroma', frame);
         if (chroma && chroma.length === 12) {
-          beatChromas.push({
-            beatTime,
-            chroma: Array.from(chroma),
-            energy,
-          });
+          const chromaArr = Array.from(chroma) as number[];
+          beatChromas.push({ beatTime, chroma: chromaArr, energy });
+
+          // Accumulate for key detection (weighted by energy)
+          for (let k = 0; k < 12; k++) {
+            overallChroma[k] += chromaArr[k] * energy;
+          }
+          chromaCount++;
         }
       } catch {
-        // Skip beats where extraction fails
+        // Skip
       }
     }
 
     console.log(`   Extracted chroma for ${beatChromas.length} beats`);
 
-    // ── 5. Match chord at each beat ──
-    // Smooth: average chroma over groups of 2 beats for stability
-    const BEATS_PER_CHORD = 4; // analyze chords in 4-beat groups (= 1 full bar in 4/4)
+    // ── 5. DETECT KEY ──
+    const key = detectKey(overallChroma);
+    console.log(`   🎼 Detected Key: ${key.name} (correlation: ${key.correlation.toFixed(3)})`);
+
+    // ── 6. Build allowed chord set for this key ──
+    const allowedChords = getDiatonicChords(key.root, key.mode);
+    console.log(`   🎹 Allowed chords: ${Array.from(allowedChords).join(', ')}`);
+
+    // ── 7. Match chord at each bar (4-beat group) ──
+    const BEATS_PER_CHORD = 4;
 
     interface BeatChord {
       time: number;
@@ -356,7 +462,7 @@ export class RealChordEngine implements ChordDetectionEngine {
       confidence: number;
     }
 
-    const chordPerBeat: BeatChord[] = [];
+    const chordPerBar: BeatChord[] = [];
 
     for (let i = 0; i < beatChromas.length; i += BEATS_PER_CHORD) {
       const groupEnd = Math.min(i + BEATS_PER_CHORD, beatChromas.length);
@@ -376,37 +482,35 @@ export class RealChordEngine implements ChordDetectionEngine {
         avgChroma[k] /= count;
       }
 
-      const beatTime = beatChromas[i].beatTime;
+      const barTime = beatChromas[i].beatTime;
 
-      // If very low energy, mark as silence
       if (totalEnergy / count < 1e-6) {
-        chordPerBeat.push({ time: beatTime, label: 'N', confidence: 0 });
+        chordPerBar.push({ time: barTime, label: 'N', confidence: 0 });
         continue;
       }
 
-      const match = matchChord(avgChroma);
+      const match = matchChordInKey(avgChroma, allowedChords);
       if (match.confidence < MIN_CONFIDENCE) {
-        chordPerBeat.push({ time: beatTime, label: 'N', confidence: match.confidence });
+        chordPerBar.push({ time: barTime, label: 'N', confidence: match.confidence });
       } else {
-        chordPerBeat.push({ time: beatTime, label: match.label, confidence: match.confidence });
+        chordPerBar.push({ time: barTime, label: match.label, confidence: match.confidence });
       }
     }
 
-    console.log(`   Matched chords for ${chordPerBeat.length} beat groups`);
+    console.log(`   Matched chords for ${chordPerBar.length} bars`);
 
-    // ── 6. Merge consecutive identical chords into events ──
+    // ── 8. Merge consecutive identical chords into events ──
     const events: ChordEvent[] = [];
     let eventIndex = 0;
 
-    if (chordPerBeat.length > 0) {
-      let currentLabel = chordPerBeat[0].label;
-      let currentStart = chordPerBeat[0].time;
-      let confSum = chordPerBeat[0].confidence;
+    if (chordPerBar.length > 0) {
+      let currentLabel = chordPerBar[0].label;
+      let currentStart = chordPerBar[0].time;
+      let confSum = chordPerBar[0].confidence;
       let confCount = 1;
 
-      for (let i = 1; i < chordPerBeat.length; i++) {
-        if (chordPerBeat[i].label !== currentLabel) {
-          // Emit previous chord (skip silence)
+      for (let i = 1; i < chordPerBar.length; i++) {
+        if (chordPerBar[i].label !== currentLabel) {
           if (currentLabel !== 'N') {
             events.push({
               id: `beat-${eventIndex}`,
@@ -417,16 +521,15 @@ export class RealChordEngine implements ChordDetectionEngine {
             eventIndex++;
           }
 
-          currentLabel = chordPerBeat[i].label;
-          currentStart = chordPerBeat[i].time;
+          currentLabel = chordPerBar[i].label;
+          currentStart = chordPerBar[i].time;
           confSum = 0;
           confCount = 0;
         }
-        confSum += chordPerBeat[i].confidence;
+        confSum += chordPerBar[i].confidence;
         confCount++;
       }
 
-      // Emit last chord
       if (currentLabel !== 'N') {
         events.push({
           id: `beat-${eventIndex}`,
@@ -438,8 +541,7 @@ export class RealChordEngine implements ChordDetectionEngine {
     }
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log(`✅ RealChordEngine: ${events.length} chords, BPM=${bpm}, in ${elapsed}s`);
-    console.log(`   Beat interval: ${(60 / bpm).toFixed(2)}s`);
+    console.log(`✅ RealChordEngine: ${events.length} chords, Key=${key.name}, BPM=${bpm}, in ${elapsed}s`);
 
     return events;
   }
