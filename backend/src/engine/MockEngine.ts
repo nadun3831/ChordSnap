@@ -1,11 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ChordDetectionEngine, ChordEvent } from './ChordDetectionEngine';
+import fs from 'fs';
+import crypto from 'crypto';
 
 /**
  * MockEngine — generates realistic chord progressions for testing.
  * 
  * Produces common pop/rock progressions (I-V-vi-IV, ii-V-I, etc.)
- * with randomized timing to simulate a real chord detection result.
+ * with deterministic timing and chord selection based on the audio file's MD5 hash.
  */
 
 const COMMON_PROGRESSIONS = [
@@ -25,18 +26,55 @@ const COMMON_PROGRESSIONS = [
   ['A7', 'D7', 'A7', 'E7'],
 ];
 
+// Helper: Mulberry32 seedable pseudo-random number generator
+function createRand(seed: number) {
+  return function() {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 export class MockEngine implements ChordDetectionEngine {
   readonly name = 'MockEngine (Development)';
 
   async analyze(audioPath: string): Promise<ChordEvent[]> {
     // Simulate processing time (1-3 seconds)
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 
-    // Pick a random progression
-    const progression = COMMON_PROGRESSIONS[Math.floor(Math.random() * COMMON_PROGRESSIONS.length)];
+    let seed = 0;
+    let fileHash = 'default';
+    try {
+      if (fs.existsSync(audioPath)) {
+        const fileBuffer = fs.readFileSync(audioPath);
+        fileHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
+        // Convert first 8 characters of MD5 hash to a 32-bit integer seed
+        seed = parseInt(fileHash.substring(0, 8), 16);
+      } else {
+        // Fallback seed based on filepath string hash
+        let hashVal = 0;
+        for (let i = 0; i < audioPath.length; i++) {
+          hashVal = (hashVal << 5) - hashVal + audioPath.charCodeAt(i);
+          hashVal |= 0;
+        }
+        seed = Math.abs(hashVal);
+        fileHash = seed.toString(16);
+      }
+    } catch (err) {
+      console.warn('Error reading or hashing file, using static seed fallback:', err);
+      seed = 987654321;
+      fileHash = 'fallback';
+    }
 
-    // Generate a realistic song duration (2-5 minutes)
-    const songDuration = 120 + Math.random() * 180;
+    const rand = createRand(seed);
+
+    // Pick a progression using seeded random
+    const progressionIndex = Math.floor(rand() * COMMON_PROGRESSIONS.length);
+    const progression = COMMON_PROGRESSIONS[progressionIndex];
+
+    // Generate a realistic song duration (2-5 minutes, deterministic based on seed)
+    const songDuration = 120 + rand() * 180;
 
     // Generate chord events across the song duration
     const events: ChordEvent[] = [];
@@ -45,14 +83,14 @@ export class MockEngine implements ChordDetectionEngine {
 
     while (currentTime < songDuration) {
       // Each chord lasts 1.5 to 4 seconds (typical bar duration at various tempos)
-      const chordDuration = 1.5 + Math.random() * 2.5;
+      const chordDuration = 1.5 + rand() * 2.5;
       const chord = progression[chordIndex % progression.length];
 
       events.push({
-        id: uuidv4(),
+        id: `mock-${fileHash.substring(0, 8)}-${chordIndex}`,
         time_seconds: Math.round(currentTime * 100) / 100,
         chord_label: chord,
-        confidence: 0.75 + Math.random() * 0.25, // 75-100% confidence
+        confidence: Math.round((0.75 + rand() * 0.25) * 100) / 100, // 75-100% confidence, rounded
       });
 
       currentTime += chordDuration;

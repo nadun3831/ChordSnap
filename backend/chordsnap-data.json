@@ -1,1790 +1,1456 @@
 {
   "songs": [
     {
-      "id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "title": "Power Chord Jam",
-      "artist": "The Antigravitys",
-      "audio_url": "ff922ffd-3b37-44f0-a835-0e25fcd387f0.mp3",
-      "duration": 263.85,
-      "status": "done",
-      "genre": "Rock",
-      "created_at": "2026-06-20T18:31:03.464Z",
-      "updated_at": "2026-06-20T18:31:05.438Z"
-    },
-    {
-      "id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "title": "Vidaa Piyaa (වද පය)  Charitha Attalage  Chandrasena Thalangama  Hesara Bandara",
+      "id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "title": "Mal Mitak Thiyanna (මල මටක තයනන) - Kasun Kalhara  Lyric Video",
       "artist": "",
-      "audio_url": "d3b687d2-b728-4455-8671-039f345a4637.mp3",
-      "duration": 145.89,
+      "audio_url": "0fd807a3-7154-48df-a483-0927aadfea99.mp3",
+      "duration": 209.94,
       "status": "done",
       "genre": "",
-      "created_at": "2026-06-20T19:28:36.452Z",
-      "updated_at": "2026-06-20T19:28:38.786Z"
-    },
-    {
-      "id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "title": "Vidaa Piyaa (වද පය)  Charitha Attalage  Chandrasena Thalangama  Hesara Bandara",
-      "artist": "",
-      "audio_url": "1ac926cc-6632-403f-9886-b5b08f5f247c.mp3",
-      "duration": 211.42,
-      "status": "done",
-      "genre": "",
-      "created_at": "2026-06-20T19:29:05.195Z",
-      "updated_at": "2026-06-20T19:29:07.303Z"
+      "created_at": "2026-06-21T07:46:23.600Z",
+      "updated_at": "2026-06-21T07:46:31.940Z"
     }
   ],
   "chord_events": [
     {
-      "id": "f40733d6-128d-49c3-8924-a70bb39e5047",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 0,
+      "id": "real-0",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 1.3,
+      "chord_label": "Fmaj7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-1",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 3.48,
+      "chord_label": "D#maj7",
+      "confidence": 0.69,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-2",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 6.64,
+      "chord_label": "Gmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-3",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 7.15,
+      "chord_label": "Cmaj7",
+      "confidence": 0.71,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-4",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 7.71,
+      "chord_label": "Am",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-5",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 9.33,
+      "chord_label": "Am",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-6",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 12.03,
+      "chord_label": "G",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-7",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 12.54,
+      "chord_label": "Gmaj7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-8",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 13.65,
+      "chord_label": "Am",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-9",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 15.79,
+      "chord_label": "G",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-10",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 16.86,
+      "chord_label": "Fmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-11",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 17.46,
+      "chord_label": "A",
+      "confidence": 0.85,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-12",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 18.3,
+      "chord_label": "A7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-13",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 18.81,
+      "chord_label": "C",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-14",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 19.64,
+      "chord_label": "A7",
+      "confidence": 0.83,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-15",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 20.57,
+      "chord_label": "Cmaj7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-16",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 21.22,
+      "chord_label": "E",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-17",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 21.97,
+      "chord_label": "Em7",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-18",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 25.54,
+      "chord_label": "E",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-19",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 25.96,
+      "chord_label": "A",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-20",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 26.38,
+      "chord_label": "Cmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-21",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 27.4,
+      "chord_label": "A",
+      "confidence": 0.87,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-22",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 28.42,
+      "chord_label": "Em7",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-23",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 31.25,
+      "chord_label": "E7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-24",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 31.86,
+      "chord_label": "Asus4",
+      "confidence": 0.83,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-25",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 32.88,
+      "chord_label": "G",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-26",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 34.04,
+      "chord_label": "Esus4",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-27",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 35.81,
       "chord_label": "A#maj7",
-      "confidence": 0.836804645145562,
-      "is_user_edited": 1
-    },
-    {
-      "id": "083d449d-5ce9-4a20-bcb4-32c6f6a7e7af",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 1.53,
-      "chord_label": "D7",
-      "confidence": 0.7757928882350906,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2e5f272b-c0b1-42a6-98ae-1088f566bcca",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 5.42,
-      "chord_label": "A7",
-      "confidence": 0.779605527735528,
-      "is_user_edited": 0
-    },
-    {
-      "id": "4cc83181-3100-49f3-bbb0-76b4c51c805d",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 8.62,
-      "chord_label": "E7",
-      "confidence": 0.9868557046188214,
-      "is_user_edited": 0
-    },
-    {
-      "id": "93496a5c-cd29-473a-aec7-6b7ed9fb5275",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 10.89,
-      "chord_label": "A7",
-      "confidence": 0.9335645652642944,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1cfe08c5-8671-4e5b-8959-259efb505440",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 14.74,
-      "chord_label": "D7",
-      "confidence": 0.768168266686837,
-      "is_user_edited": 0
-    },
-    {
-      "id": "96a52db1-f40b-4240-b39b-0ed480f71cb7",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 17.4,
-      "chord_label": "A7",
-      "confidence": 0.7893169165226293,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d18e1e9d-02b7-428e-902c-06c41f6f510c",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 21.32,
-      "chord_label": "E7",
-      "confidence": 0.9015306149843052,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e5af0e16-6fa6-4501-b94b-c4cc85ac1a60",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 22.86,
-      "chord_label": "A7",
-      "confidence": 0.8221544319198669,
-      "is_user_edited": 0
-    },
-    {
-      "id": "3ae1864b-6962-4c5d-a7fb-0c2e7cb0426c",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 24.76,
-      "chord_label": "D7",
-      "confidence": 0.8280940653133553,
-      "is_user_edited": 0
-    },
-    {
-      "id": "999a9a8c-a544-46f5-8df4-e6eea0d93e28",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 26.33,
-      "chord_label": "A7",
-      "confidence": 0.8626885336262616,
-      "is_user_edited": 1
-    },
-    {
-      "id": "12b94ad5-1792-4d2b-876c-cb7df9a2fdb0",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 29.09,
-      "chord_label": "E7",
-      "confidence": 0.830452728512281,
-      "is_user_edited": 0
-    },
-    {
-      "id": "32b5bd93-8b97-43c6-95c6-70a40fabac9e",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 32.41,
-      "chord_label": "A7",
-      "confidence": 0.775954169579824,
-      "is_user_edited": 0
-    },
-    {
-      "id": "cc9be3f6-000c-495e-b1bb-0f225a9aaee8",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 34.26,
-      "chord_label": "D7",
-      "confidence": 0.8345410799225416,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2c1ee7dd-214b-426c-aa5a-e0a2739db898",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 37.39,
-      "chord_label": "A7",
-      "confidence": 0.9621680588616989,
-      "is_user_edited": 0
-    },
-    {
-      "id": "829fe4ea-d099-4286-87aa-61e439b068af",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 39.48,
-      "chord_label": "E7",
-      "confidence": 0.8477495229229035,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d44cc09c-444c-4d53-99f1-ceeecf400a5f",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 41.03,
-      "chord_label": "A7",
-      "confidence": 0.8382753047805519,
-      "is_user_edited": 0
-    },
-    {
-      "id": "8d6f6cd3-c0fa-4009-a48e-a2c75e793206",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 43.86,
-      "chord_label": "D7",
-      "confidence": 0.7589841130681434,
-      "is_user_edited": 0
-    },
-    {
-      "id": "a30dbd90-ac6e-4164-b398-cf92656b6d61",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 46.89,
-      "chord_label": "A7",
-      "confidence": 0.9889787207404395,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2a846557-08cf-431f-af1b-2cfd844c2e9c",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 50.28,
-      "chord_label": "E7",
-      "confidence": 0.8332623795984352,
-      "is_user_edited": 0
-    },
-    {
-      "id": "fe2fb389-2338-4fbf-bfe2-b4dea397731a",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 52.99,
-      "chord_label": "A7",
-      "confidence": 0.7500299098725496,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2205ba5a-1b93-412e-8e27-3153e2f30aa1",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 56.5,
-      "chord_label": "D7",
-      "confidence": 0.8197243207553784,
-      "is_user_edited": 0
-    },
-    {
-      "id": "145c8ced-4b1e-43db-9257-489778c982d1",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 59.85,
-      "chord_label": "A7",
-      "confidence": 0.8756087460352042,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1de91c04-793b-4577-aab6-b807bbd288d2",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 63.61,
-      "chord_label": "E7",
-      "confidence": 0.8063360057157976,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1472e849-ff3b-4bf7-a092-d63904611465",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 65.32,
-      "chord_label": "A7",
-      "confidence": 0.8253709703338923,
-      "is_user_edited": 0
-    },
-    {
-      "id": "0c5a985d-4a8d-4405-a4e5-65829548fe24",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 67.9,
-      "chord_label": "D7",
-      "confidence": 0.931954550483395,
-      "is_user_edited": 0
-    },
-    {
-      "id": "0459d66e-d2fa-453b-a24e-900d3da484da",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 70.33,
-      "chord_label": "A7",
-      "confidence": 0.8408284279234914,
-      "is_user_edited": 0
-    },
-    {
-      "id": "9d6388a7-391d-4a45-9f26-f0c124db6c55",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 73.49,
-      "chord_label": "E7",
-      "confidence": 0.9071608705040964,
-      "is_user_edited": 0
-    },
-    {
-      "id": "8a552ba7-f308-4e56-a0bd-558c24290d6a",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 75.65,
-      "chord_label": "A7",
-      "confidence": 0.9607091181567975,
-      "is_user_edited": 0
-    },
-    {
-      "id": "cdd8dec7-5555-4074-8b10-e993373b36b8",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 78.89,
-      "chord_label": "D7",
-      "confidence": 0.8170073101471965,
-      "is_user_edited": 0
-    },
-    {
-      "id": "3c10180b-21ee-44a2-a8a8-3b995fe8e5ee",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 82.03,
-      "chord_label": "A7",
-      "confidence": 0.9602893837140434,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d8a81933-9511-4c28-a2fe-3cbdd363a35d",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 84.87,
-      "chord_label": "E7",
-      "confidence": 0.7531819409766541,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e8f6be64-68b5-412c-b994-ae4169cbdb43",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 88.68,
-      "chord_label": "A7",
-      "confidence": 0.9229802983066446,
-      "is_user_edited": 0
-    },
-    {
-      "id": "5ee614a7-9460-4cfa-8155-6a183db23dc0",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 90.43,
-      "chord_label": "D7",
-      "confidence": 0.9306497547930103,
-      "is_user_edited": 0
-    },
-    {
-      "id": "96f1e61a-5e69-464c-bd39-7583759e49b9",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 94.13,
-      "chord_label": "A7",
-      "confidence": 0.8186374191695607,
-      "is_user_edited": 0
-    },
-    {
-      "id": "67ac1c0d-78c1-422a-848a-ac535bb118d1",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 96.6,
-      "chord_label": "E7",
-      "confidence": 0.8721759643181788,
-      "is_user_edited": 0
-    },
-    {
-      "id": "08bd3a53-79f0-445e-ac8e-68ea90416402",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 98.54,
-      "chord_label": "A7",
-      "confidence": 0.9015449751650575,
-      "is_user_edited": 0
-    },
-    {
-      "id": "8a668577-d3eb-4eb1-92dd-b80f6a4e4520",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 101.2,
-      "chord_label": "D7",
-      "confidence": 0.874918468573785,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e5a79bdc-f994-47c0-9d16-8a5dce26813b",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 104.32,
-      "chord_label": "A7",
-      "confidence": 0.8988224670699376,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b2e1f17c-75d2-4a76-b4b8-00b4b545a0f4",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 107.69,
-      "chord_label": "E7",
-      "confidence": 0.779515756769223,
-      "is_user_edited": 0
-    },
-    {
-      "id": "858b3447-0a1c-4785-9db6-11fa1544f153",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 111.55,
-      "chord_label": "A7",
-      "confidence": 0.8254891928408223,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d16e8ac9-2fb6-42bc-a592-aa20641672ec",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 114.77,
-      "chord_label": "D7",
-      "confidence": 0.8862168696544583,
-      "is_user_edited": 0
-    },
-    {
-      "id": "6ca87e1b-cd4f-4948-a379-1e26a1c6f7de",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 117.42,
-      "chord_label": "A7",
-      "confidence": 0.9115473594742481,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b47f637d-f46f-4f29-b09b-b7bf572a7eeb",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 120.93,
-      "chord_label": "E7",
-      "confidence": 0.787055710157442,
-      "is_user_edited": 0
-    },
-    {
-      "id": "35c47621-fc8e-439f-a506-b892c4166e33",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 124.44,
-      "chord_label": "A7",
-      "confidence": 0.7527804197893715,
-      "is_user_edited": 0
-    },
-    {
-      "id": "577d613e-92fe-4f99-81c0-8f45eacca15c",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 126.72,
-      "chord_label": "D7",
-      "confidence": 0.8304314285986695,
-      "is_user_edited": 0
-    },
-    {
-      "id": "6c8082e2-2089-4df2-9985-43226f54d81d",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 130,
-      "chord_label": "A7",
-      "confidence": 0.8365349685561896,
-      "is_user_edited": 0
-    },
-    {
-      "id": "45a48806-8374-4aad-8948-0c3cd4296dee",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 133.34,
-      "chord_label": "E7",
-      "confidence": 0.8474638920056522,
-      "is_user_edited": 0
-    },
-    {
-      "id": "4cbc5087-050e-4d90-9a49-2707e9f58566",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 136.58,
-      "chord_label": "A7",
-      "confidence": 0.7886884209979627,
-      "is_user_edited": 0
-    },
-    {
-      "id": "cb1d18ff-f5d7-44b0-924d-ddf751f7bc83",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 139.89,
-      "chord_label": "D7",
-      "confidence": 0.9235365765257552,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1ae1447d-ef01-4e95-af53-a5fa395c91f3",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 143.5,
-      "chord_label": "A7",
-      "confidence": 0.8560817908922846,
-      "is_user_edited": 0
-    },
-    {
-      "id": "cd9f8b35-3037-42eb-88c8-dffa7390431e",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 147.19,
-      "chord_label": "E7",
-      "confidence": 0.9712906326408569,
-      "is_user_edited": 0
-    },
-    {
-      "id": "bde41af5-6164-4da0-9052-59acfc4e2328",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 151.05,
-      "chord_label": "A7",
-      "confidence": 0.9793612523174142,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b3720934-2664-45aa-870e-0a4afa68e089",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 153.83,
-      "chord_label": "D7",
-      "confidence": 0.977080172907502,
-      "is_user_edited": 0
-    },
-    {
-      "id": "fb94d62f-d8c5-4653-8e1a-6cae33e91a0d",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 155.9,
-      "chord_label": "A7",
-      "confidence": 0.8937552294521494,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7041cc87-307b-4c2c-a56b-fa9548f35218",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 158.44,
-      "chord_label": "E7",
-      "confidence": 0.8609542015631177,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7ee2a112-e256-40bb-91ea-81f26d58a5d9",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 162.01,
-      "chord_label": "A7",
-      "confidence": 0.9818947289347804,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b5e6fbf7-d78e-482c-9ee8-bb23563cac01",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 164.66,
-      "chord_label": "D7",
-      "confidence": 0.9667277185275177,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e1a0a4b9-93b2-4285-a397-56966776169b",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 166.93,
-      "chord_label": "A7",
-      "confidence": 0.9905603574463259,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c4047d1e-fec0-4ba8-8c00-12d67dacb055",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 168.55,
-      "chord_label": "E7",
-      "confidence": 0.9506128992847296,
-      "is_user_edited": 0
-    },
-    {
-      "id": "0ab4306c-9245-4760-8da7-6116f2742b2b",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 172.16,
-      "chord_label": "A7",
-      "confidence": 0.9484420231026701,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1c58b91a-10ee-47c9-a6f1-bfd68494154d",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 174.52,
-      "chord_label": "D7",
-      "confidence": 0.9277545278222585,
-      "is_user_edited": 0
-    },
-    {
-      "id": "37f68c95-ce4b-4b74-a94a-2880e98242aa",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 176.75,
-      "chord_label": "A7",
-      "confidence": 0.8317006735788266,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ce721d80-535a-4002-927f-9b61ce6db447",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 180.29,
-      "chord_label": "E7",
-      "confidence": 0.8783607809975751,
-      "is_user_edited": 0
-    },
-    {
-      "id": "902400af-b8e1-4011-b56d-50ac82506a49",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 183.75,
-      "chord_label": "A7",
-      "confidence": 0.7852737106029732,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f057cc10-6a84-44e9-8605-b326b943a240",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 187.65,
-      "chord_label": "D7",
-      "confidence": 0.8910552959796818,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e9fe71cb-d92f-4420-a75d-20b957c55108",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 191.35,
-      "chord_label": "A7",
-      "confidence": 0.7702365797057649,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f73beec1-19fa-4c90-b674-262c4c1c9fe4",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 193.99,
-      "chord_label": "E7",
-      "confidence": 0.9596471160911951,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ce22af9d-1e11-4eab-9910-8945193c663a",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 195.85,
-      "chord_label": "A7",
-      "confidence": 0.8695499448271761,
-      "is_user_edited": 0
-    },
-    {
-      "id": "adbf004e-3027-440e-b1ff-467da183fbff",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 199.41,
-      "chord_label": "D7",
-      "confidence": 0.8117808674813282,
-      "is_user_edited": 0
-    },
-    {
-      "id": "535d2a99-b520-42fd-965e-7227611818b1",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 202.62,
-      "chord_label": "A7",
-      "confidence": 0.9369382227390718,
-      "is_user_edited": 0
-    },
-    {
-      "id": "075e394b-b359-4e05-9fad-0adb1a265c19",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 205.08,
-      "chord_label": "E7",
-      "confidence": 0.8421350584288417,
-      "is_user_edited": 0
-    },
-    {
-      "id": "feb16c72-dc3b-4e15-84f2-970da1834ee4",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 207.64,
-      "chord_label": "A7",
-      "confidence": 0.8623389760533029,
-      "is_user_edited": 0
-    },
-    {
-      "id": "205cc227-22ea-41fa-9f50-23a3068c7aa0",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 210.75,
-      "chord_label": "D7",
-      "confidence": 0.8729859828562608,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ed106717-8767-43c9-a7b1-5b5d62d3ee54",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 214.16,
-      "chord_label": "A7",
-      "confidence": 0.9278122906899338,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f3782aa1-07f3-4e8e-bd2b-28435cc5efa5",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 217.23,
-      "chord_label": "E7",
-      "confidence": 0.7906576420882135,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7a9361cd-43d0-48e0-9f6d-119b5bdfe3a8",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 220.07,
-      "chord_label": "A7",
-      "confidence": 0.9721244083967605,
-      "is_user_edited": 0
-    },
-    {
-      "id": "30f828ed-6157-4e5d-8ef2-38ddda35cc1a",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 223,
-      "chord_label": "D7",
-      "confidence": 0.9091175869260505,
-      "is_user_edited": 0
-    },
-    {
-      "id": "a43f3b6a-b1c7-4672-82c5-00d9e7a7b3c7",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 224.51,
-      "chord_label": "A7",
-      "confidence": 0.7844192282620329,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b2dfcc00-c351-4042-a4a6-3c585d16dcbd",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 226.39,
-      "chord_label": "E7",
-      "confidence": 0.8461350893958369,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ca27f2e5-3055-4697-946a-3950d31ef0dc",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 228.05,
-      "chord_label": "A7",
-      "confidence": 0.9506514054247956,
-      "is_user_edited": 0
-    },
-    {
-      "id": "dd292574-fa5c-4c4d-9cea-21267d2ecb95",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 230.49,
-      "chord_label": "D7",
-      "confidence": 0.7825265711490433,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d44d7cad-66e7-4286-a622-e7703f1e3f67",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 233.1,
-      "chord_label": "A7",
-      "confidence": 0.7624977015965622,
-      "is_user_edited": 0
-    },
-    {
-      "id": "570c86c6-502d-47a4-b89f-4681d88c8a74",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 235.65,
-      "chord_label": "E7",
-      "confidence": 0.8742539097534632,
-      "is_user_edited": 0
-    },
-    {
-      "id": "3d0142a2-9f02-4434-90c3-a4ef56245362",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 237.6,
-      "chord_label": "A7",
-      "confidence": 0.843549870942709,
-      "is_user_edited": 0
-    },
-    {
-      "id": "efb57fdb-0797-4f11-8043-0ff3792d43d6",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 241.37,
-      "chord_label": "D7",
-      "confidence": 0.9647172304614434,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e970971e-26ee-4f33-8410-901a10963456",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 243.35,
-      "chord_label": "A7",
-      "confidence": 0.9689845976049403,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2336dfc6-b43d-4a8e-ad37-4e3d86571561",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 247.22,
-      "chord_label": "E7",
-      "confidence": 0.8192113759575499,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f2418f2b-b761-47dc-a0f4-3fd79aa724c4",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 250.73,
-      "chord_label": "A7",
-      "confidence": 0.9731361713080007,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7ca288af-5dcb-43b4-bea2-f5cef2237b03",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 254.4,
-      "chord_label": "D7",
-      "confidence": 0.8457700708497891,
-      "is_user_edited": 0
-    },
-    {
-      "id": "65d06bfd-d267-4aaa-8a32-48f710e16a16",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 257.95,
-      "chord_label": "A7",
-      "confidence": 0.7649302449982496,
-      "is_user_edited": 0
-    },
-    {
-      "id": "09b54056-505a-4f89-8146-0e06b477bef1",
-      "song_id": "c5a82b75-4b21-4e94-b4c3-f47a93abfa8a",
-      "time_seconds": 260.85,
-      "chord_label": "E7",
-      "confidence": 0.9678920103900672,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d6d1a051-7bb7-4979-9a92-509ab1fcd8bf",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 0,
-      "chord_label": "G",
-      "confidence": 0.814427678225271,
-      "is_user_edited": 0
-    },
-    {
-      "id": "6e011ed4-e7f1-491a-8d7c-9c1e7e93a9d2",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 2.18,
-      "chord_label": "D",
-      "confidence": 0.8306897715151291,
-      "is_user_edited": 0
-    },
-    {
-      "id": "6723808a-3a07-43ee-b327-87838788959e",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 3.8,
-      "chord_label": "Em",
-      "confidence": 0.9011096655633984,
-      "is_user_edited": 0
-    },
-    {
-      "id": "dea2ad2f-7aa1-47a7-bb17-431f86808599",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 5.84,
-      "chord_label": "C",
-      "confidence": 0.8238286051618438,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c4bfa05d-c003-4bbc-9082-ed2e11436310",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 7.9,
-      "chord_label": "G",
-      "confidence": 0.9914589397851868,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1db1c687-b767-4894-be26-dcac57079aff",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 9.86,
-      "chord_label": "D",
-      "confidence": 0.9693316084193383,
-      "is_user_edited": 0
-    },
-    {
-      "id": "0a5788b9-dad4-46c5-b761-07cfbcf0a587",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 12.9,
-      "chord_label": "Em",
-      "confidence": 0.9419279489158757,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b4fabb54-c504-48b0-a21d-778df1e147e3",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 15.45,
-      "chord_label": "C",
-      "confidence": 0.799621300556002,
-      "is_user_edited": 0
-    },
-    {
-      "id": "29305696-1b12-48b7-8c51-3d1ee8dd96c4",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 18.13,
-      "chord_label": "G",
-      "confidence": 0.905228783923519,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1b8f8ba4-24ca-46ef-aee4-715d01378817",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 19.63,
-      "chord_label": "D",
-      "confidence": 0.8430301923618655,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b0ce5a18-a97c-447f-977c-3881133f391b",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 22.41,
-      "chord_label": "Em",
-      "confidence": 0.8889152260532058,
-      "is_user_edited": 0
-    },
-    {
-      "id": "a2a8877b-7369-42a8-b0a6-38d726824849",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 24.7,
-      "chord_label": "C",
-      "confidence": 0.9393168379698502,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b7fa1387-c2eb-4bc1-87ca-4845eef32734",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 28,
-      "chord_label": "G",
-      "confidence": 0.9614443796747145,
-      "is_user_edited": 0
-    },
-    {
-      "id": "48cf5f5d-2d00-49dd-b4ca-4fe5444eb338",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 29.72,
-      "chord_label": "D",
-      "confidence": 0.9877340173750568,
-      "is_user_edited": 0
-    },
-    {
-      "id": "03ef69d4-d7cd-4266-aa43-e7075a438573",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 33.1,
-      "chord_label": "Em",
-      "confidence": 0.8562161029762947,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1f3bc42c-b5d0-47bb-8649-693aff8e2997",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 36.15,
-      "chord_label": "C",
-      "confidence": 0.8808430617139752,
-      "is_user_edited": 0
-    },
-    {
-      "id": "731ccb86-4bec-4ff8-89b3-fe03df17cb3c",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 38.79,
-      "chord_label": "G",
-      "confidence": 0.8037061083129518,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c8d24681-df4e-4e04-a654-b0971b0e1aa5",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 40.98,
-      "chord_label": "D",
-      "confidence": 0.826477677331059,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d964eb49-ed8d-43dd-90aa-0df4fe9544de",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 43.71,
-      "chord_label": "Em",
-      "confidence": 0.9573437703059632,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b0a0609c-60c5-4d92-967c-01b4d7fd8e08",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 47.51,
-      "chord_label": "C",
-      "confidence": 0.9550295846321908,
-      "is_user_edited": 0
-    },
-    {
-      "id": "564b4bcf-e4c8-461a-accb-4dd78ea0afdb",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 49.68,
-      "chord_label": "G",
-      "confidence": 0.9573953268340559,
-      "is_user_edited": 0
-    },
-    {
-      "id": "4791837a-345e-4478-8fc0-5efaf98d8c43",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 52.13,
-      "chord_label": "D",
-      "confidence": 0.7689108370035452,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f3e66473-2185-424c-9361-364c843f4005",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 55.24,
-      "chord_label": "Em",
-      "confidence": 0.8778764423483276,
-      "is_user_edited": 0
-    },
-    {
-      "id": "80601fd5-b2e5-4296-91f0-a97f2909eecf",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 59.1,
-      "chord_label": "C",
-      "confidence": 0.8517057220182275,
-      "is_user_edited": 0
-    },
-    {
-      "id": "9cb8a6c9-f85c-4d20-ae23-bcf659c1a3f7",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 61.39,
-      "chord_label": "G",
-      "confidence": 0.9683458329800279,
-      "is_user_edited": 0
-    },
-    {
-      "id": "aa0aa8cb-4cdd-4cac-a05a-db600e608a9d",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 64.92,
-      "chord_label": "D",
-      "confidence": 0.896595189374724,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d0c1e25d-be44-4a76-9d4d-a68dab084153",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 66.67,
-      "chord_label": "Em",
-      "confidence": 0.7560663898443251,
-      "is_user_edited": 0
-    },
-    {
-      "id": "d02a7ed3-cfc2-4f10-88ad-fd773791f697",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 70.24,
-      "chord_label": "C",
-      "confidence": 0.772622038368866,
-      "is_user_edited": 0
-    },
-    {
-      "id": "17159957-5ddc-4ca3-a54f-2c5e5f65195b",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 73.51,
-      "chord_label": "G",
-      "confidence": 0.8483004647642713,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c8311e2b-c652-452b-85ae-75671383419f",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 75.49,
-      "chord_label": "D",
-      "confidence": 0.9250982096245504,
-      "is_user_edited": 0
-    },
-    {
-      "id": "3585e3ab-d6c7-4167-ba85-2a1c7f395550",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 77.3,
-      "chord_label": "Em",
-      "confidence": 0.8854946719293888,
-      "is_user_edited": 0
-    },
-    {
-      "id": "11ed159f-fc20-400a-8dbe-26972f090661",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 81.23,
-      "chord_label": "C",
-      "confidence": 0.8912529699166237,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1ff05d45-3ef8-4bfb-85b3-a46eeddf2c14",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 83.26,
-      "chord_label": "G",
-      "confidence": 0.9646266830568333,
-      "is_user_edited": 0
-    },
-    {
-      "id": "72d67090-cb42-4a36-b8a2-b259721296e0",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 85.33,
-      "chord_label": "D",
-      "confidence": 0.7727784513406795,
-      "is_user_edited": 0
-    },
-    {
-      "id": "e4024ea2-eab0-45d0-8101-16b93f4be55c",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 88.3,
-      "chord_label": "Em",
-      "confidence": 0.8562049315245196,
-      "is_user_edited": 0
-    },
-    {
-      "id": "4cbace7c-5858-4307-abb3-ae08798ff24b",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 90.71,
-      "chord_label": "C",
-      "confidence": 0.8172255963326149,
-      "is_user_edited": 0
-    },
-    {
-      "id": "dda2f0d7-1b74-4ff0-9f41-19de746cb640",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 93.72,
-      "chord_label": "G",
-      "confidence": 0.8507865479835929,
-      "is_user_edited": 0
-    },
-    {
-      "id": "802cc42b-2432-4852-9dab-03793843b2c4",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 96.44,
-      "chord_label": "D",
-      "confidence": 0.9223137231721816,
-      "is_user_edited": 0
-    },
-    {
-      "id": "63d580d4-8995-4e74-a6aa-aa59df9585d4",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 99.94,
-      "chord_label": "Em",
-      "confidence": 0.8812119500363058,
-      "is_user_edited": 0
-    },
-    {
-      "id": "2fbe4dfd-be65-4157-b254-53d306aa5bef",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 102.09,
-      "chord_label": "C",
-      "confidence": 0.9792361111616443,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f8654f43-2466-41c8-88b3-4e3fb71906b4",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 105.91,
-      "chord_label": "G",
-      "confidence": 0.9662122534637773,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b392a7a1-5a31-47a9-ba94-df085d567b3f",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 108.48,
-      "chord_label": "D",
-      "confidence": 0.8920638740801807,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7f33f60d-f8a8-475a-9309-04bf9ad8c74e",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 112.07,
-      "chord_label": "Em",
-      "confidence": 0.7550540565646416,
-      "is_user_edited": 0
-    },
-    {
-      "id": "b295a700-9615-423c-a4e3-2dd260d1088a",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 114.61,
-      "chord_label": "C",
-      "confidence": 0.8590223446780898,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ed31d0da-c573-43a7-b045-1b1c3ec3f223",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 117.86,
-      "chord_label": "G",
-      "confidence": 0.8143935777658876,
-      "is_user_edited": 0
-    },
-    {
-      "id": "8374bb5d-cde4-4d95-a491-6b4e76001d10",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 121.27,
-      "chord_label": "D",
-      "confidence": 0.9560160249709875,
-      "is_user_edited": 0
-    },
-    {
-      "id": "23862126-36fe-404d-9dc5-aafeb16c154c",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 123.09,
-      "chord_label": "Em",
-      "confidence": 0.9264771349217201,
-      "is_user_edited": 0
-    },
-    {
-      "id": "7668bad8-cc00-4319-808f-b11f6b078e83",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 125.56,
-      "chord_label": "C",
-      "confidence": 0.9455722500228605,
-      "is_user_edited": 0
-    },
-    {
-      "id": "da1e09d1-98d2-45c6-909a-83f57587be22",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 128.93,
-      "chord_label": "G",
-      "confidence": 0.8858353128133744,
-      "is_user_edited": 0
-    },
-    {
-      "id": "f3b864cd-e670-4f28-8d2e-af42ccc75eb1",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 131.75,
-      "chord_label": "D",
-      "confidence": 0.8319554118995536,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1b9f1263-ee62-4227-80a9-a9c98ef1e43c",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 134.69,
-      "chord_label": "Em",
-      "confidence": 0.8140390689727881,
-      "is_user_edited": 0
-    },
-    {
-      "id": "6bf68448-d6d9-4993-8c79-3239b151e0d2",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 137.51,
-      "chord_label": "C",
-      "confidence": 0.9173117738296491,
-      "is_user_edited": 0
-    },
-    {
-      "id": "dd0fc6af-4374-4b88-93a1-43e8f388d951",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 139.98,
-      "chord_label": "G",
-      "confidence": 0.9328854233033843,
-      "is_user_edited": 0
-    },
-    {
-      "id": "55b205fe-3c1f-453b-bc4a-c051cebf73fa",
-      "song_id": "a07beff6-dbbf-42ad-b04b-c144d1c0d000",
-      "time_seconds": 142.89,
-      "chord_label": "D",
-      "confidence": 0.8967812364178837,
-      "is_user_edited": 0
-    },
-    {
-      "id": "83ae51a0-906c-496f-b230-0c1b40c211df",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 0,
-      "chord_label": "Dm7",
-      "confidence": 0.9559114059315008,
-      "is_user_edited": 1
-    },
-    {
-      "id": "bbad1e99-52d7-49ef-9cfc-6711a8ba3895",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 3.78,
-      "chord_label": "G7",
-      "confidence": 0.7892951805980082,
+      "confidence": 0.69,
       "is_user_edited": 0
     },
     {
-      "id": "4027fca2-d890-49d8-9837-b59a95a04862",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 6.67,
+      "id": "real-28",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 36.69,
       "chord_label": "Cmaj7",
-      "confidence": 0.9705746484927172,
+      "confidence": 0.77,
       "is_user_edited": 0
     },
     {
-      "id": "51907f64-2dbb-47e6-90c4-1f3b54d1ad80",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 10.07,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9371215403416661,
-      "is_user_edited": 0
-    },
-    {
-      "id": "38c1a2f2-e7e3-47eb-b3bc-b966e68be239",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 12.49,
-      "chord_label": "Dm7",
-      "confidence": 0.7958995532980726,
-      "is_user_edited": 0
-    },
-    {
-      "id": "84779537-b9ea-4f5e-a4e7-e00131919a1c",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 16.18,
-      "chord_label": "G7",
-      "confidence": 0.9506282917327118,
-      "is_user_edited": 0
-    },
-    {
-      "id": "df2f4e17-e929-46fb-9051-ccaed9bd6385",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 19.52,
+      "id": "real-29",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 38.08,
       "chord_label": "Cmaj7",
-      "confidence": 0.9869203206952591,
+      "confidence": 0.79,
       "is_user_edited": 0
     },
     {
-      "id": "9efbd500-d410-4bf5-aa92-042a94174cb9",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 23.42,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9563316115304371,
+      "id": "real-30",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 39.15,
+      "chord_label": "Am7",
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "20990789-f1a5-40a6-aefd-2df80b67dc1b",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 25.3,
-      "chord_label": "Dm7",
-      "confidence": 0.8148341336065322,
-      "is_user_edited": 0
-    },
-    {
-      "id": "adfa5b1c-8bcc-499e-b3a6-a253628d70e7",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 27.02,
-      "chord_label": "G7",
-      "confidence": 0.9462690913090831,
-      "is_user_edited": 0
-    },
-    {
-      "id": "a1c34e7f-239e-44e9-ab22-ef7e152c1c31",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 28.96,
+      "id": "real-31",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 42.49,
       "chord_label": "Cmaj7",
-      "confidence": 0.8448797409406128,
+      "confidence": 0.75,
       "is_user_edited": 0
     },
     {
-      "id": "85e018fe-3d47-4a07-b56e-d459bce706ba",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 31.64,
+      "id": "real-32",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 43.37,
+      "chord_label": "A#maj7",
+      "confidence": 0.72,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-33",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 44.16,
+      "chord_label": "Bm7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-34",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 45.23,
+      "chord_label": "Am7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-35",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 46.3,
+      "chord_label": "Gmaj7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-36",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 47.88,
+      "chord_label": "Am7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-37",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 48.48,
       "chord_label": "Fmaj7",
-      "confidence": 0.7947958654106045,
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "e11cb76b-9d4a-4e5f-a7a3-0a03473769d6",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 34.68,
-      "chord_label": "Dm7",
-      "confidence": 0.8732104384556805,
+      "id": "real-38",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 49.69,
+      "chord_label": "A#maj7",
+      "confidence": 0.76,
       "is_user_edited": 0
     },
     {
-      "id": "6a21883a-df43-4df7-a769-2c2be4da0ac0",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 36.38,
-      "chord_label": "G7",
-      "confidence": 0.7783588199623074,
-      "is_user_edited": 0
-    },
-    {
-      "id": "ac7aa1a3-8fa2-4f92-82e6-de1aaa0a0f5c",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 39.09,
+      "id": "real-39",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 50.53,
       "chord_label": "Cmaj7",
-      "confidence": 0.9700405514770194,
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "7a1f6c6d-7389-4946-b188-dd8d3a2b6ccd",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 41.26,
-      "chord_label": "Fmaj7",
-      "confidence": 0.8017582420061755,
+      "id": "real-40",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 51.13,
+      "chord_label": "Gmaj7",
+      "confidence": 0.8,
       "is_user_edited": 0
     },
     {
-      "id": "1b126db4-fb76-4ff8-9ab3-d99c87410f80",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 44.6,
-      "chord_label": "Dm7",
-      "confidence": 0.7872291815783714,
+      "id": "real-41",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 52.24,
+      "chord_label": "Am",
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "9fa52352-5e4b-4fcf-860a-4c8ca5e9612d",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 46.36,
-      "chord_label": "G7",
-      "confidence": 0.7748955180869512,
+      "id": "real-42",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 53.68,
+      "chord_label": "Am",
+      "confidence": 0.74,
       "is_user_edited": 0
     },
     {
-      "id": "493ef810-fe40-4014-a3a4-493ab8511861",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 49.8,
+      "id": "real-43",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 56.05,
+      "chord_label": "Gsus4",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-44",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 56.47,
       "chord_label": "Cmaj7",
-      "confidence": 0.9641381514368976,
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "833c17f8-a107-43ac-b513-fc573bac7677",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 53.26,
-      "chord_label": "Fmaj7",
-      "confidence": 0.8561676777206391,
+      "id": "real-45",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 56.98,
+      "chord_label": "G",
+      "confidence": 0.75,
       "is_user_edited": 0
     },
     {
-      "id": "31df2e92-7403-4089-9579-a3bdc161e2bf",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 56.4,
-      "chord_label": "Dm7",
-      "confidence": 0.9873515699152786,
+      "id": "real-46",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 58.05,
+      "chord_label": "Esus4",
+      "confidence": 0.71,
       "is_user_edited": 0
     },
     {
-      "id": "777e6b68-78ac-4210-ace0-4514561b5e06",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 59.19,
-      "chord_label": "G7",
-      "confidence": 0.806102428383001,
+      "id": "real-47",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 58.56,
+      "chord_label": "Am",
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "ad9e192a-79a9-42d8-a1b2-b7c977e553aa",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 62.76,
+      "id": "real-48",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 59.44,
+      "chord_label": "Am",
+      "confidence": 0.82,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-49",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 60.23,
+      "chord_label": "G",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-50",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 61.35,
+      "chord_label": "Am",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-51",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 62.93,
+      "chord_label": "Am",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-52",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 64.46,
+      "chord_label": "G",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-53",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 66.64,
+      "chord_label": "Am",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-54",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 68.13,
+      "chord_label": "Am",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-55",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 68.73,
+      "chord_label": "G",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-56",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 69.98,
+      "chord_label": "Am",
+      "confidence": 0.72,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-57",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 71.15,
       "chord_label": "Cmaj7",
-      "confidence": 0.9315664792917401,
+      "confidence": 0.74,
       "is_user_edited": 0
     },
     {
-      "id": "6252c330-4dd2-41bf-be6f-c0a787557326",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 65.72,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9455206719131708,
-      "is_user_edited": 0
-    },
-    {
-      "id": "a6a8c9cb-7730-46ab-8050-61a2db530a61",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 68.22,
-      "chord_label": "Dm7",
-      "confidence": 0.9393556375416223,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c9c2b646-9dd8-447e-8f56-ada1381704dd",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
+      "id": "real-58",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
       "time_seconds": 71.8,
-      "chord_label": "G7",
-      "confidence": 0.9277827900734391,
+      "chord_label": "Am",
+      "confidence": 0.74,
       "is_user_edited": 0
     },
     {
-      "id": "e0b47ea4-2e5b-49c7-a294-0e6373082817",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 75.78,
-      "chord_label": "Cmaj7",
-      "confidence": 0.8512911157393477,
+      "id": "real-59",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 72.77,
+      "chord_label": "Amaj7",
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "a0493f73-afc2-4fef-a0b3-abbe322a2578",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 77.39,
+      "id": "real-60",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 74.16,
       "chord_label": "Fmaj7",
-      "confidence": 0.7998863451988343,
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "7439217e-4be5-40f9-be3b-ae513e02e9f6",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 80.6,
-      "chord_label": "Dm7",
-      "confidence": 0.8548253657397358,
+      "id": "real-61",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 75.14,
+      "chord_label": "Gmaj7",
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "b5a29462-9fb5-4f7d-bf67-a944fb9ec19c",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 84,
-      "chord_label": "G7",
-      "confidence": 0.8194780312601814,
+      "id": "real-62",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 76.9,
+      "chord_label": "A7",
+      "confidence": 0.83,
       "is_user_edited": 0
     },
     {
-      "id": "80010c00-afd6-4d9e-bff8-a43799f5a8c3",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 87.5,
-      "chord_label": "Cmaj7",
-      "confidence": 0.868807034988339,
+      "id": "real-63",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 77.88,
+      "chord_label": "C",
+      "confidence": 0.88,
       "is_user_edited": 0
     },
     {
-      "id": "295fef70-08df-41b8-a694-7614939ccc91",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 90.69,
+      "id": "real-64",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 78.53,
       "chord_label": "Fmaj7",
-      "confidence": 0.8976949992975651,
+      "confidence": 0.82,
       "is_user_edited": 0
     },
     {
-      "id": "15a4046d-dec0-4788-beb3-38a2869129f0",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 92.51,
-      "chord_label": "Dm7",
-      "confidence": 0.8803915493672076,
+      "id": "real-65",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 80.25,
+      "chord_label": "D7",
+      "confidence": 0.76,
       "is_user_edited": 0
     },
     {
-      "id": "2ec474cd-5758-45f7-b3be-993a6908859e",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 95.13,
-      "chord_label": "G7",
-      "confidence": 0.909592666526261,
+      "id": "real-66",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 81.32,
+      "chord_label": "C#maj7",
+      "confidence": 0.7,
       "is_user_edited": 0
     },
     {
-      "id": "1f166387-625c-4aad-b252-a95b7b3a554c",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 97.57,
+      "id": "real-67",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 81.73,
+      "chord_label": "Am",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-68",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 82.94,
+      "chord_label": "Am7",
+      "confidence": 0.81,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-69",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 84.33,
       "chord_label": "Cmaj7",
-      "confidence": 0.9897880113526475,
+      "confidence": 0.74,
       "is_user_edited": 0
     },
     {
-      "id": "893e0231-32d4-4fe3-973d-1a0d4847b700",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 101.14,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9909064016366862,
+      "id": "real-70",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 85.08,
+      "chord_label": "D#maj7",
+      "confidence": 0.7,
       "is_user_edited": 0
     },
     {
-      "id": "034ba0c8-e52f-42ee-9e3f-25af68f4ae26",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 103.85,
+      "id": "real-71",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 85.64,
       "chord_label": "Dm7",
-      "confidence": 0.7682983941617699,
+      "confidence": 0.77,
       "is_user_edited": 0
     },
     {
-      "id": "63dfd5d0-ad88-44c7-96e0-7911ade4fba7",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 107.51,
-      "chord_label": "G7",
-      "confidence": 0.8322322027814955,
+      "id": "real-72",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 87.03,
+      "chord_label": "Gmaj7",
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "2675a122-28e5-45f5-9204-320b39ce9ad0",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 110.55,
+      "id": "real-73",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 87.96,
+      "chord_label": "Fmaj7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-74",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 89.26,
+      "chord_label": "Gsus4",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-75",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 90.37,
+      "chord_label": "Asus4",
+      "confidence": 0.7,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-76",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 91.02,
+      "chord_label": "Em7",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-77",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 92.55,
+      "chord_label": "A#maj7",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-78",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 93.44,
       "chord_label": "Cmaj7",
-      "confidence": 0.9446241271541738,
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "ae7c3141-fbcb-461a-be0d-82ef5194d2c7",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 113.54,
+      "id": "real-79",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 93.95,
+      "chord_label": "Gmaj7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-80",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 95.62,
       "chord_label": "Fmaj7",
-      "confidence": 0.8204031920631125,
+      "confidence": 0.82,
       "is_user_edited": 0
     },
     {
-      "id": "3cd3ce3f-11ee-46d0-852d-b80fbe4fc049",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 116.47,
-      "chord_label": "Dm7",
-      "confidence": 0.8158305864429881,
+      "id": "real-81",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 96.64,
+      "chord_label": "G",
+      "confidence": 0.77,
       "is_user_edited": 0
     },
     {
-      "id": "4c0d53de-f11f-4f42-baca-3e5b6afb7351",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 120.2,
-      "chord_label": "G7",
-      "confidence": 0.8302541776941312,
+      "id": "real-82",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 97.85,
+      "chord_label": "Am",
+      "confidence": 0.73,
       "is_user_edited": 0
     },
     {
-      "id": "e5257667-0de3-42db-bf8a-e07a8ff87c58",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 122.94,
+      "id": "real-83",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 99.29,
+      "chord_label": "A7",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-84",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 100.03,
+      "chord_label": "Amaj7",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-85",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 101.01,
       "chord_label": "Cmaj7",
-      "confidence": 0.8988693961640541,
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "b0d13e3d-57ab-40ef-91d2-1f512ee79f18",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 126.44,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9956689682129065,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1b5402b4-4e5b-4169-862a-df5f830b4156",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 130.01,
-      "chord_label": "Dm7",
-      "confidence": 0.9900906287696133,
-      "is_user_edited": 0
-    },
-    {
-      "id": "15f83a23-5cc7-4b6a-98b7-83c9c753dbfd",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 133.11,
-      "chord_label": "G7",
-      "confidence": 0.9806389921682652,
-      "is_user_edited": 0
-    },
-    {
-      "id": "c2815340-442f-4c3f-8cb6-9fbec660fdea",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 135.79,
+      "id": "real-86",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 102.03,
       "chord_label": "Cmaj7",
-      "confidence": 0.8031425585650502,
+      "confidence": 0.76,
       "is_user_edited": 0
     },
     {
-      "id": "10dcb433-2357-4327-b51e-969b6b5fa69b",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 138.58,
+      "id": "real-87",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 104.12,
+      "chord_label": "Am7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-88",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 105.33,
+      "chord_label": "Gmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-89",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 106.25,
+      "chord_label": "Gmaj7",
+      "confidence": 0.71,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-90",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 106.86,
+      "chord_label": "Am7",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-91",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 107.6,
+      "chord_label": "Dsus4",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-92",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 108.53,
+      "chord_label": "Bm7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-93",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 109.78,
+      "chord_label": "Am7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-94",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 110.62,
+      "chord_label": "Gmaj7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-95",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 112.11,
+      "chord_label": "Am7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-96",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 113.31,
       "chord_label": "Fmaj7",
-      "confidence": 0.8704209848567704,
+      "confidence": 0.79,
       "is_user_edited": 0
     },
     {
-      "id": "191a8e45-09b8-4b94-814d-2df869ffae20",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 142.45,
-      "chord_label": "Dm7",
-      "confidence": 0.9486782525119329,
+      "id": "real-97",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 114.15,
+      "chord_label": "A#maj7",
+      "confidence": 0.76,
       "is_user_edited": 0
     },
     {
-      "id": "981a5f19-6ba9-4fee-9cfc-0c2e771c0510",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 144.82,
-      "chord_label": "G7",
-      "confidence": 0.7740242619964495,
-      "is_user_edited": 0
-    },
-    {
-      "id": "1876bc13-9698-4e28-93e3-9c80f8fbd167",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 147.93,
+      "id": "real-98",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 114.75,
       "chord_label": "Cmaj7",
-      "confidence": 0.9849535206966981,
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "023bf8e8-1df2-4c92-b72c-2c7e31032abe",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 149.5,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9446985775423771,
+      "id": "real-99",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 115.36,
+      "chord_label": "Gmaj7",
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "8c7d717a-515b-419a-b407-65eba8054421",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 151.25,
-      "chord_label": "Dm7",
-      "confidence": 0.9817471515763393,
+      "id": "real-100",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 116.42,
+      "chord_label": "Am",
+      "confidence": 0.8,
       "is_user_edited": 0
     },
     {
-      "id": "cb742a29-ea99-40d3-aa4c-731bf848cb57",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 153.1,
-      "chord_label": "G7",
-      "confidence": 0.9840899557359326,
+      "id": "real-101",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 117.59,
+      "chord_label": "Esus4",
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "fc57befe-b888-4fe7-a65c-c99c1f9276ac",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 155.88,
+      "id": "real-102",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 120.19,
+      "chord_label": "G",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-103",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 121.86,
+      "chord_label": "Gmaj7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-104",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 122.37,
+      "chord_label": "Am",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-105",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 124.46,
+      "chord_label": "Gmaj7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-106",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 125.02,
       "chord_label": "Cmaj7",
-      "confidence": 0.994702235039729,
+      "confidence": 0.71,
       "is_user_edited": 0
     },
     {
-      "id": "21cde283-f59d-4d50-b087-93cb17a753d5",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 158.83,
-      "chord_label": "Fmaj7",
-      "confidence": 0.9391823409051882,
+      "id": "real-107",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 125.62,
+      "chord_label": "Am",
+      "confidence": 0.75,
       "is_user_edited": 0
     },
     {
-      "id": "6148b7be-57ac-4c5b-a3c4-12a880e0a4f1",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 162.26,
-      "chord_label": "Dm7",
-      "confidence": 0.7620858811065828,
+      "id": "real-108",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 126.69,
+      "chord_label": "Am",
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "7d464cf3-20a0-4382-9f70-867e618895c7",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 164.21,
-      "chord_label": "G7",
-      "confidence": 0.9492383680446732,
+      "id": "real-109",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 127.94,
+      "chord_label": "Esus4",
+      "confidence": 0.8,
       "is_user_edited": 0
     },
     {
-      "id": "e19fcf48-0be0-48ea-b619-ae2a5ec228be",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 167.02,
+      "id": "real-110",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 129.94,
+      "chord_label": "G",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-111",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 130.36,
+      "chord_label": "Gmaj7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-112",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 131.38,
+      "chord_label": "Am",
+      "confidence": 0.72,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-113",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 133.1,
+      "chord_label": "G",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-114",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 135.19,
+      "chord_label": "A",
+      "confidence": 0.84,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-115",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 138.81,
+      "chord_label": "E",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-116",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 139.83,
+      "chord_label": "G",
+      "confidence": 0.84,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-117",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 141.13,
+      "chord_label": "Em7",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-118",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 141.64,
       "chord_label": "Cmaj7",
-      "confidence": 0.7669435957711219,
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "6db57d07-1c2d-4867-874d-62292584634c",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 169.51,
-      "chord_label": "Fmaj7",
-      "confidence": 0.7703231110685823,
+      "id": "real-119",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 145.26,
+      "chord_label": "A",
+      "confidence": 0.87,
       "is_user_edited": 0
     },
     {
-      "id": "3e45577f-d767-4b4b-a6d8-5c7b1f4d7e19",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 172.18,
-      "chord_label": "Dm7",
-      "confidence": 0.8750944784821805,
+      "id": "real-120",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 146.56,
+      "chord_label": "E7",
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "18ee5931-6f9b-45f3-b479-c66b1c0aa3b2",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 175.55,
-      "chord_label": "G7",
-      "confidence": 0.8272137091199125,
+      "id": "real-121",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 147.91,
+      "chord_label": "A",
+      "confidence": 0.85,
       "is_user_edited": 0
     },
     {
-      "id": "ba04b673-a009-4020-a3bd-c83b36d2f6fd",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 179.33,
+      "id": "real-122",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 149.26,
+      "chord_label": "E7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-123",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 149.72,
+      "chord_label": "D7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-124",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 150.74,
+      "chord_label": "G",
+      "confidence": 0.81,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-125",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 152.69,
       "chord_label": "Cmaj7",
-      "confidence": 0.8430694844211207,
+      "confidence": 0.83,
       "is_user_edited": 0
     },
     {
-      "id": "f1b041b9-9de8-4f33-80b9-532c5a3c5f09",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 182.71,
-      "chord_label": "Fmaj7",
-      "confidence": 0.8530821901411219,
-      "is_user_edited": 0
-    },
-    {
-      "id": "026f9e00-3064-429e-ab13-12f1c2c4a129",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 185.14,
+      "id": "real-126",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 154.51,
       "chord_label": "Dm7",
-      "confidence": 0.7797717428034276,
+      "confidence": 0.8,
       "is_user_edited": 0
     },
     {
-      "id": "0c1938a7-4a06-4263-81c3-b41f0def9098",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 188.17,
-      "chord_label": "G7",
-      "confidence": 0.8790857879842484,
+      "id": "real-127",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 156.64,
+      "chord_label": "Gmaj7",
+      "confidence": 0.76,
       "is_user_edited": 0
     },
     {
-      "id": "c4b045b2-3f8b-4fb0-b15a-234c598a0a5d",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 191.72,
+      "id": "real-128",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 159.38,
+      "chord_label": "C",
+      "confidence": 0.87,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-129",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 160.08,
+      "chord_label": "Fmaj7",
+      "confidence": 0.82,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-130",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 163.14,
+      "chord_label": "Esus4",
+      "confidence": 0.72,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-131",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 163.98,
+      "chord_label": "Amaj7",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-132",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 165,
+      "chord_label": "Emaj7",
+      "confidence": 0.69,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-133",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 165.84,
       "chord_label": "Cmaj7",
-      "confidence": 0.958974228455991,
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "a2285147-d9c3-468f-8548-09309d3eb125",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 195.33,
-      "chord_label": "Fmaj7",
-      "confidence": 0.852138930720001,
+      "id": "real-134",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 166.35,
+      "chord_label": "D#maj7",
+      "confidence": 0.71,
       "is_user_edited": 0
     },
     {
-      "id": "649ccbd0-7b94-4f39-a9c7-4408d8497989",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 197.96,
+      "id": "real-135",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 167.04,
       "chord_label": "Dm7",
-      "confidence": 0.773643472688762,
+      "confidence": 0.78,
       "is_user_edited": 0
     },
     {
-      "id": "f47e4e3c-bf5a-497c-ab50-e80b3906e592",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 200.04,
-      "chord_label": "G7",
-      "confidence": 0.9517952261810709,
+      "id": "real-136",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 168.11,
+      "chord_label": "Fmaj7",
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "5d611c0c-60d7-4782-918f-921ba4ea82d2",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 203.8,
+      "id": "real-137",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 168.53,
+      "chord_label": "Gmaj7",
+      "confidence": 0.72,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-138",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 169.46,
+      "chord_label": "Fmaj7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-139",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 170.16,
+      "chord_label": "A7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-140",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 170.99,
+      "chord_label": "Gmaj7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-141",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 172.11,
+      "chord_label": "Em",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-142",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 172.52,
+      "chord_label": "Em7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-143",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 173.96,
+      "chord_label": "Amaj7",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-144",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 174.8,
       "chord_label": "Cmaj7",
-      "confidence": 0.8768982839081638,
+      "confidence": 0.72,
       "is_user_edited": 0
     },
     {
-      "id": "0488d744-ab27-479d-a1fb-eae3bdd97183",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 206.8,
+      "id": "real-145",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 175.45,
+      "chord_label": "Gmaj7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-146",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 176.15,
+      "chord_label": "Esus4",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-147",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 176.56,
+      "chord_label": "Am",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-148",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 176.98,
       "chord_label": "Fmaj7",
-      "confidence": 0.9516218681590585,
+      "confidence": 0.8,
       "is_user_edited": 0
     },
     {
-      "id": "6bf731a9-606d-4f10-8789-67035db5d801",
-      "song_id": "4d59d42e-40d1-440d-8783-1785c5da9ad2",
-      "time_seconds": 208.42,
-      "chord_label": "Dm7",
-      "confidence": 0.9547535972955286,
+      "id": "real-149",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 178.1,
+      "chord_label": "G",
+      "confidence": 0.83,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-150",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 178.61,
+      "chord_label": "Cmaj7",
+      "confidence": 0.7,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-151",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 179.21,
+      "chord_label": "Am",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-152",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 181.58,
+      "chord_label": "Dsus4",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-153",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 182.04,
+      "chord_label": "A7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-154",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 182.46,
+      "chord_label": "Cmaj7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-155",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 183.39,
+      "chord_label": "Cmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-156",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 184.69,
+      "chord_label": "Am7",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-157",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 185.81,
+      "chord_label": "Am7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-158",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 187.57,
+      "chord_label": "Gmaj7",
+      "confidence": 0.7,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-159",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 189.94,
+      "chord_label": "B7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-160",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 190.36,
+      "chord_label": "Bm7",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-161",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 191.98,
+      "chord_label": "Gmaj7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-162",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 193.52,
+      "chord_label": "Am7",
+      "confidence": 0.78,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-163",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 194.17,
+      "chord_label": "Am7",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-164",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 194.58,
+      "chord_label": "Fmaj7",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-165",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 195.37,
+      "chord_label": "A#maj7",
+      "confidence": 0.74,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-166",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 196.21,
+      "chord_label": "Cmaj7",
+      "confidence": 0.75,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-167",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 196.72,
+      "chord_label": "Gmaj7",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-168",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 197.88,
+      "chord_label": "Am",
+      "confidence": 0.73,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-169",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 198.53,
+      "chord_label": "Amaj7",
+      "confidence": 0.77,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-170",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 199.46,
+      "chord_label": "Am",
+      "confidence": 0.82,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-171",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 200.3,
+      "chord_label": "Am",
+      "confidence": 0.83,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-172",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 201.13,
+      "chord_label": "Am",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-173",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 201.87,
+      "chord_label": "Am",
+      "confidence": 0.85,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-174",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 202.71,
+      "chord_label": "G",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-175",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 203.59,
+      "chord_label": "Gmaj7",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-176",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 204.66,
+      "chord_label": "Am",
+      "confidence": 0.76,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-177",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 205.45,
+      "chord_label": "Esus4",
+      "confidence": 0.79,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-178",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 206.52,
+      "chord_label": "Esus4",
+      "confidence": 0.8,
+      "is_user_edited": 0
+    },
+    {
+      "id": "real-179",
+      "song_id": "7c28605c-0a77-4bf7-8a67-73121de9e9a4",
+      "time_seconds": 206.94,
+      "chord_label": "A",
+      "confidence": 0.79,
       "is_user_edited": 0
     }
   ]

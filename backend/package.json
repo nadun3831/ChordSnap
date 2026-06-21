@@ -9,14 +9,17 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "audio-decode": "^3.10.2",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "meyda": "^5.6.3",
     "multer": "^1.4.5-lts.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/meyda": "^4.3.8",
     "@types/multer": "^1.4.11",
     "@types/uuid": "^10.0.0",
     "ts-node-dev": "^2.0.0",

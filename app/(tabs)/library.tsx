@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -40,22 +41,34 @@ export default function LibraryScreen() {
     setRefreshing(false);
   };
 
+  const doDelete = async (song: Song) => {
+    try {
+      await deleteSong(song.id);
+      setSongs(prev => prev.filter(s => s.id !== song.id));
+    } catch (err) {
+      if (Platform.OS === 'web') {
+        alert('Failed to delete song');
+      } else {
+        Alert.alert('Error', 'Failed to delete song');
+      }
+    }
+  };
+
   const handleDelete = (song: Song) => {
-    Alert.alert('Delete Song', `Delete "${song.title}"?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await deleteSong(song.id);
-            setSongs(prev => prev.filter(s => s.id !== song.id));
-          } catch (err) {
-            Alert.alert('Error', 'Failed to delete song');
-          }
+    if (Platform.OS === 'web') {
+      if (confirm(`Delete "${song.title}"?`)) {
+        doDelete(song);
+      }
+    } else {
+      Alert.alert('Delete Song', `Delete "${song.title}"?`, [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => doDelete(song),
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   const formatDuration = (seconds: number) => {
@@ -113,18 +126,18 @@ export default function LibraryScreen() {
           </View>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={() => {
-              if (item.status === 'done') {
-                router.push({ pathname: '/player', params: { songId: item.id } });
-              } else if (item.status === 'processing') {
-                router.push({ pathname: '/analyzing', params: { songId: item.id } });
-              }
-            }}
-            onLongPress={() => handleDelete(item)}
-          >
-            <GlassCard style={styles.songRow}>
+          <GlassCard style={styles.songRow}>
+            <TouchableOpacity
+              style={styles.songMainContent}
+              activeOpacity={0.7}
+              onPress={() => {
+                if (item.status === 'done') {
+                  router.push({ pathname: '/player', params: { songId: item.id } });
+                } else if (item.status === 'processing') {
+                  router.push({ pathname: '/analyzing', params: { songId: item.id } });
+                }
+              }}
+            >
               <View style={styles.songIcon}>
                 <MaterialIcons
                   name={item.status === 'done' ? 'music-note' : item.status === 'processing' ? 'hourglass-top' : 'error-outline'}
@@ -144,11 +157,25 @@ export default function LibraryScreen() {
                   </Text>
                 </View>
               </View>
+            </TouchableOpacity>
+
+            <View style={styles.songActionsContainer}>
+              <TouchableOpacity
+                style={styles.deleteBtn}
+                onPress={() => handleDelete(item)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <MaterialIcons name="delete-outline" size={22} color={Colors.error} />
+              </TouchableOpacity>
               {item.status === 'done' && (
-                <MaterialIcons name="play-circle-filled" size={32} color={Colors.primary} />
+                <TouchableOpacity
+                  onPress={() => router.push({ pathname: '/player', params: { songId: item.id } })}
+                >
+                  <MaterialIcons name="play-circle-filled" size={32} color={Colors.primary} />
+                </TouchableOpacity>
               )}
-            </GlassCard>
-          </TouchableOpacity>
+            </View>
+          </GlassCard>
         )}
       />
     </View>
@@ -206,8 +233,19 @@ const styles = StyleSheet.create({
   songRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 12, // Reduced padding slightly to accommodate new layout
+    gap: 12,
+  },
+  songMainContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
+  },
+  songActionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   songIcon: {
     width: 48,
@@ -240,6 +278,11 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
+  },
+  deleteBtn: {
+    padding: 8,
+    borderRadius: 9999,
+    backgroundColor: 'rgba(255, 180, 171, 0.08)',
   },
   emptyState: {
     alignItems: 'center',

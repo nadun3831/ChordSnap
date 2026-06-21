@@ -9,13 +9,14 @@ import {
   Dimensions,
   TextInput,
   Modal,
+  Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import Colors from '../constants/Colors';
 import GlassCard from '../components/GlassCard';
-import { getSong, getSongChords, updateChord, Song, ChordEvent } from '../lib/api';
+import { getSong, getSongChords, updateChord, deleteSong, Song, ChordEvent } from '../lib/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -208,6 +209,48 @@ export default function PlayerScreen() {
           <TouchableOpacity style={styles.actionBtn}>
             <MaterialIcons name="share" size={22} color={Colors.onSurfaceVariant} />
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionBtn}
+            onPress={async () => {
+              const doPlayerDelete = async () => {
+                try {
+                  if (soundRef.current) {
+                    await soundRef.current.stopAsync().catch(() => {});
+                    await soundRef.current.unloadAsync().catch(() => {});
+                  }
+                  await deleteSong(songId!);
+                  if (router.canGoBack()) {
+                    router.back();
+                  } else {
+                    router.replace('/(tabs)');
+                  }
+                } catch (err) {
+                  if (Platform.OS === 'web') {
+                    alert('Failed to delete song');
+                  } else {
+                    Alert.alert('Error', 'Failed to delete song');
+                  }
+                }
+              };
+
+              if (Platform.OS === 'web') {
+                if (confirm(`Delete "${song?.title}"?`)) {
+                  await doPlayerDelete();
+                }
+              } else {
+                Alert.alert('Delete Song', `Delete "${song?.title}"?`, [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: doPlayerDelete,
+                  },
+                ]);
+              }
+            }}
+          >
+            <MaterialIcons name="delete-outline" size={22} color={Colors.error} />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -245,79 +288,104 @@ export default function PlayerScreen() {
         </GlassCard>
       </View>
 
-      {/* Chord Scroll Area */}
-      <View style={styles.chordScrollContainer}>
-        {/* Top fade */}
-        <View style={styles.fadeTop} />
-
-        <ScrollView
-          contentContainerStyle={styles.chordScroll}
-          showsVerticalScrollIndicator={false}
-        >
-          {chords.map((chord, index) => {
-            const isActive = index === activeChordIndex;
-            const isPast = index < activeChordIndex;
-            const distance = Math.abs(index - activeChordIndex);
-
-            let scale = 1;
-            let opacity = 1;
-            if (!isActive) {
-              scale = Math.max(0.5, 1 - distance * 0.12);
-              opacity = Math.max(0.2, 1 - distance * 0.25);
-            }
-
-            return (
-              <TouchableOpacity
-                key={chord.id}
-                onPress={() => openEditModal(chord)}
+      {/* Chord Dashboard Section (No scrolling, static) */}
+      <View style={styles.dashboardContainer}>
+        {/* Main Display: Current & Next */}
+        <View style={styles.mainChordDisplay}>
+          {/* Previous Chord Preview */}
+          <View style={styles.sideChordColumn}>
+            {activeChordIndex > 0 ? (
+              <TouchableOpacity 
+                style={styles.sideChordCard} 
+                onPress={skipBackward}
                 activeOpacity={0.7}
-                style={[
-                  styles.chordItem,
-                  { opacity, transform: [{ scale }] },
-                ]}
               >
-                {isActive ? (
-                  <GlassCard
-                    style={styles.activeChordCard}
-                    glow
-                    glowColor={Colors.primaryContainer}
-                  >
-                    <Text style={styles.activeChordTime}>
-                      ACTIVE NOW • {formatTime(chord.time_seconds)}
-                    </Text>
-                    <Text style={styles.activeChordLabel}>
-                      {chord.chord_label}
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.editBtn}
-                      onPress={() => openEditModal(chord)}
-                    >
-                      <MaterialIcons name="edit" size={14} color={Colors.onSurfaceVariant} />
-                      <Text style={styles.editBtnText}>Edit Label</Text>
-                    </TouchableOpacity>
-                  </GlassCard>
-                ) : (
-                  <View style={styles.inactiveChordItem}>
-                    <Text style={styles.inactiveChordTime}>
-                      {formatTime(chord.time_seconds)}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.inactiveChordLabel,
-                        { fontSize: isActive ? 56 : Math.max(24, 40 - distance * 6) },
-                      ]}
-                    >
-                      {chord.chord_label}
-                    </Text>
-                  </View>
-                )}
+                <Text style={styles.sideChordTag}>PREVIOUS</Text>
+                <Text style={styles.sideChordLabel}>{chords[activeChordIndex - 1]?.chord_label}</Text>
+                <Text style={styles.sideChordTime}>{formatTime(chords[activeChordIndex - 1]?.time_seconds || 0)}</Text>
               </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+            ) : (
+              <View style={[styles.sideChordCard, styles.disabledSideCard]}>
+                <Text style={styles.sideChordTag}>PREVIOUS</Text>
+                <Text style={styles.sideChordLabel}>—</Text>
+                <Text style={styles.sideChordTime}>00:00</Text>
+              </View>
+            )}
+          </View>
 
-        {/* Bottom fade */}
-        <View style={styles.fadeBottom} />
+          {/* Current Active Chord */}
+          <GlassCard
+            style={styles.currentChordCard}
+            glow
+            glowColor={Colors.primaryContainer}
+          >
+            <Text style={styles.currentChordTag}>CURRENT</Text>
+            <Text style={styles.currentChordLabel}>
+              {chords[activeChordIndex]?.chord_label || '—'}
+            </Text>
+            <Text style={styles.currentChordTime}>
+              Started at {chords[activeChordIndex] ? formatTime(chords[activeChordIndex].time_seconds) : '00:00'}
+            </Text>
+            
+            <TouchableOpacity
+              style={styles.editBtn}
+              onPress={() => chords[activeChordIndex] && openEditModal(chords[activeChordIndex])}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name="edit" size={14} color={Colors.onSurfaceVariant} />
+              <Text style={styles.editBtnText}>Edit Chord</Text>
+            </TouchableOpacity>
+          </GlassCard>
+
+          {/* Next Chord Preview */}
+          <View style={styles.sideChordColumn}>
+            {activeChordIndex < chords.length - 1 ? (
+              <TouchableOpacity 
+                style={styles.sideChordCard} 
+                onPress={skipForward}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.sideChordTag}>NEXT</Text>
+                <Text style={styles.sideChordLabel}>{chords[activeChordIndex + 1]?.chord_label}</Text>
+                <Text style={styles.sideChordTime}>{formatTime(chords[activeChordIndex + 1]?.time_seconds || 0)}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={[styles.sideChordCard, styles.disabledSideCard]}>
+                <Text style={styles.sideChordTag}>NEXT</Text>
+                <Text style={styles.sideChordLabel}>END</Text>
+                <Text style={styles.sideChordTime}>—</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Upcoming Timeline Strip */}
+        {chords.length > 0 && (
+          <View style={styles.timelineStrip}>
+            <Text style={styles.timelineTitle}>COMING UP NEXT:</Text>
+            <View style={styles.timelineItems}>
+              {Array.from({ length: 4 }).map((_, i) => {
+                const targetIndex = activeChordIndex + 1 + i;
+                if (targetIndex >= chords.length) {
+                  // Fill remaining slots with empty indicators to maintain width layout symmetry
+                  return (
+                    <View key={`empty-${i}`} style={[styles.timelineItem, { opacity: 0.2 }]}>
+                      <Text style={styles.timelineChordLabel}>—</Text>
+                      <Text style={styles.timelineChordTime}>--:--</Text>
+                    </View>
+                  );
+                }
+                const upcomingChord = chords[targetIndex];
+                return (
+                  <View key={upcomingChord.id} style={styles.timelineItem}>
+                    <Text style={styles.timelineChordLabel}>{upcomingChord.chord_label}</Text>
+                    <Text style={styles.timelineChordTime}>{formatTime(upcomingChord.time_seconds)}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        )}
       </View>
 
       {/* Playback Controls */}
@@ -506,91 +574,148 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.onSurfaceVariant,
   },
-  chordScrollContainer: {
+  dashboardContainer: {
     flex: 1,
-    overflow: 'hidden',
-    marginTop: 8,
-  },
-  fadeTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 40,
-    zIndex: 10,
-    backgroundColor: Colors.background,
-    opacity: 0.8,
-  },
-  fadeBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 40,
-    zIndex: 10,
-    backgroundColor: Colors.background,
-    opacity: 0.8,
-  },
-  chordScroll: {
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 48,
-    gap: 24,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
+    marginVertical: 12,
   },
-  chordItem: {
+  mainChordDisplay: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     width: '100%',
+    gap: 8,
   },
-  activeChordCard: {
-    padding: 32,
+  sideChordColumn: {
+    flex: 1.2,
     alignItems: 'center',
-    width: '100%',
-    borderColor: `${Colors.primary}66`,
-    borderRadius: 32,
-    gap: 12,
   },
-  activeChordTime: {
+  sideChordCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 10,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  disabledSideCard: {
+    opacity: 0.25,
+  },
+  sideChordTag: {
     fontFamily: 'Inter-SemiBold',
-    fontSize: 12,
-    letterSpacing: 0.6,
-    color: Colors.primary,
+    fontSize: 9,
+    letterSpacing: 0.8,
+    color: Colors.onSurfaceVariant,
+    opacity: 0.6,
+    textTransform: 'uppercase',
   },
-  activeChordLabel: {
+  sideChordLabel: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: 64,
+    fontSize: 24,
+    color: Colors.onSurface,
+  },
+  sideChordTime: {
+    fontFamily: 'Inter',
+    fontSize: 10,
+    color: Colors.onSurfaceVariant,
+    opacity: 0.8,
+  },
+  currentChordCard: {
+    flex: 2,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: `${Colors.primary}4D`,
+    borderRadius: 24,
+    gap: 8,
+    shadowColor: Colors.primaryContainer,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+  },
+  currentChordTag: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 11,
+    letterSpacing: 1,
     color: Colors.primary,
-    letterSpacing: -1.28,
+    textTransform: 'uppercase',
+  },
+  currentChordLabel: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 54,
+    color: Colors.primary,
+    letterSpacing: -1,
+  },
+  currentChordTime: {
+    fontFamily: 'Inter',
+    fontSize: 11,
+    color: Colors.onSurfaceVariant,
   },
   editBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 9999,
-    marginTop: 8,
+    marginTop: 4,
   },
   editBtnText: {
     fontFamily: 'Inter-SemiBold',
-    fontSize: 12,
-    letterSpacing: 0.6,
+    fontSize: 11,
     color: Colors.onSurfaceVariant,
+  },
+  timelineStrip: {
+    marginTop: 20,
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  timelineTitle: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 10,
+    letterSpacing: 0.5,
+    color: Colors.onSurfaceVariant,
+    opacity: 0.7,
+    marginBottom: 8,
     textTransform: 'uppercase',
   },
-  inactiveChordItem: {
+  timelineItems: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    gap: 8,
+  },
+  timelineItem: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
   },
-  inactiveChordTime: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 12,
-    color: Colors.onSurfaceVariant,
-  },
-  inactiveChordLabel: {
+  timelineChordLabel: {
     fontFamily: 'Montserrat-Bold',
+    fontSize: 13,
+    color: Colors.secondary,
+  },
+  timelineChordTime: {
+    fontFamily: 'Inter',
+    fontSize: 9,
     color: Colors.onSurfaceVariant,
-    letterSpacing: -0.5,
+    opacity: 0.6,
   },
   controlsSection: {
     backgroundColor: `${Colors.surfaceContainer}CC`,

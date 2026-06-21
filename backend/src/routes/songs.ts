@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import * as db from '../db';
-import { MockEngine } from '../engine/MockEngine';
+import { RealChordEngine } from '../engine/RealChordEngine';
 import { ChordDetectionEngine } from '../engine/ChordDetectionEngine';
 
 const router = Router();
@@ -33,8 +33,8 @@ const upload = multer({
   },
 });
 
-// Use MockEngine by default — swap to KlangioEngine when ready
-const engine: ChordDetectionEngine = new MockEngine();
+// Use RealChordEngine for actual audio analysis
+const engine: ChordDetectionEngine = new RealChordEngine();
 console.log(`🎵 Using chord engine: ${engine.name}`);
 
 // ============================================
@@ -200,11 +200,29 @@ router.patch('/:id/chords/:eventId', (req: Request, res: Response) => {
 // ============================================
 router.delete('/:id', (req: Request, res: Response) => {
   try {
+    // Get song info before deleting so we can remove the audio file
+    const song = db.getSong(req.params.id);
+
     const deleted = db.deleteSong(req.params.id);
     if (!deleted) {
       res.status(404).json({ error: 'Song not found' });
       return;
     }
+
+    // Delete the uploaded audio file from disk
+    if (song?.audio_url) {
+      const fs = require('fs');
+      const audioPath = path.join(__dirname, '..', '..', 'uploads', song.audio_url);
+      try {
+        if (fs.existsSync(audioPath)) {
+          fs.unlinkSync(audioPath);
+          console.log(`🗑️  Deleted audio file: ${song.audio_url}`);
+        }
+      } catch (fileErr: any) {
+        console.warn(`Warning: Could not delete audio file: ${fileErr.message}`);
+      }
+    }
+
     res.json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
