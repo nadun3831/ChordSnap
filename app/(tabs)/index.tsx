@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   ambientContainer: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
     zIndex: -1,
   },

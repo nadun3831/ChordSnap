@@ -23,7 +23,8 @@
       "permissions": [
         "RECORD_AUDIO"
       ],
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.ChordSnap"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -37,9 +38,7 @@
         {
           "fonts": []
         }
-      ],
-      "expo-status-bar",
-      "expo-splash-screen"
+      ]
     ]
   }
 }

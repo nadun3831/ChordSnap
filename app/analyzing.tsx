@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   bgGradient: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.background,
     // Simulating radial gradient with a positioned element
   },
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     gap: 32,
   },
   ringsContainer: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
   },

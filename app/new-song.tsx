@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
+import { Audio } from 'expo-av';
 import Colors from '../constants/Colors';
 import GlassCard from '../components/GlassCard';
 import WaveformVisualizer from '../components/WaveformVisualizer';
@@ -21,30 +22,185 @@ export default function NewSongScreen() {
   const router = useRouter();
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadSource, setUploadSource] = useState<'record' | 'file' | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const mediaRecorderRef = useRef<any>(null);
+  const audioChunksRef = useRef<any[]>([]);
+
+  // Cleanup recording instances on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (recordingRef.current) {
+        recordingRef.current.stopAndUnloadAsync().catch((err: any) => console.log('Cleanup recording error:', err));
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        try {
+          mediaRecorderRef.current.stop();
+          const stream = mediaRecorderRef.current.stream;
+          if (stream) {
+            stream.getTracks().forEach((track: any) => track.stop());
+          }
+        } catch (e) {}
+      }
+    };
+  }, []);
+
+  const startRecording = async () => {
+    try {
+      if (Platform.OS === 'web') {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          Alert.alert('Not Supported', 'Audio recording is not supported in this browser.');
+          return;
+        }
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new (window as any).MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (event: any) => {
+          if (event.data && event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+        setRecordingTime(0);
+        timerRef.current = setInterval(() => {
+          setRecordingTime(prev => prev + 1);
+        }, 1000);
+      } else {
+        const { status } = await Audio.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Please grant microphone access to record audio.');
+          return;
+        }
+
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+
+        recordingRef.current = recording;
+        setIsRecording(true);
+        setRecordingTime(0);
+        timerRef.current = setInterval(() => {
+          setRecordingTime(prev => prev + 1);
+        }, 1000);
+      }
+    } catch (err: any) {
+      console.error('Failed to start recording:', err);
+      Alert.alert('Error', 'Failed to start recording: ' + err.message);
+    }
+  };
+
+  const stopRecording = async () => {
+    setIsRecording(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    setIsUploading(true);
+    setUploadSource('record');
+
+    try {
+      if (Platform.OS === 'web') {
+        const mediaRecorder = mediaRecorderRef.current;
+        if (!mediaRecorder) {
+          setIsUploading(false);
+          setUploadSource(null);
+          return;
+        }
+
+        const uploadPromise = new Promise<{ id: string; title: string }>((resolve, reject) => {
+          mediaRecorder.onstop = async () => {
+            try {
+              const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+              
+              // Stop all audio tracks from the stream
+              const stream = mediaRecorder.stream;
+              if (stream) {
+                stream.getTracks().forEach((track: any) => track.stop());
+              }
+
+              const response = await uploadSong(
+                audioBlob,
+                'recording.wav',
+                'audio/wav',
+                'Live Recording',
+              );
+              resolve(response);
+            } catch (uploadErr) {
+              reject(uploadErr);
+            }
+          };
+        });
+
+        mediaRecorder.stop();
+        const response = await uploadPromise;
+        
+        // Navigate to analyzing screen
+        router.replace({
+          pathname: '/analyzing',
+          params: { songId: response.id, songTitle: response.title },
+        });
+      } else {
+        const recording = recordingRef.current;
+        if (!recording) {
+          setIsUploading(false);
+          setUploadSource(null);
+          return;
+        }
+
+        await recording.stopAndUnloadAsync();
+        const uri = recording.getURI();
+        recordingRef.current = null;
+
+        if (!uri) {
+          throw new Error('Recording URI is null');
+        }
+
+        // Set audio mode back to non-recording
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+        });
+
+        const fileName = uri.split('/').pop() || 'recording.m4a';
+        const mimeType = 'audio/x-m4a';
+
+        const response = await uploadSong(
+          uri,
+          fileName,
+          mimeType,
+          'Live Recording',
+        );
+
+        // Navigate to analyzing screen
+        router.replace({
+          pathname: '/analyzing',
+          params: { songId: response.id, songTitle: response.title },
+        });
+      }
+    } catch (err: any) {
+      console.error('Failed to stop and upload recording:', err);
+      Alert.alert('Upload Failed', err.message || 'Could not upload the recording.');
+      setIsUploading(false);
+      setUploadSource(null);
+    }
+  };
 
   const toggleRecording = () => {
     if (isRecording) {
-      // Stop recording
-      setIsRecording(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-
-      // In a real app, we'd save the recording and upload it
-      Alert.alert(
-        'Recording Saved',
-        'In the full version, this would save and upload the recording for chord analysis.',
-        [
-          { text: 'OK', onPress: () => setRecordingTime(0) },
-        ]
-      );
+      stopRecording();
     } else {
-      // Start recording
-      setIsRecording(true);
-      setRecordingTime(0);
-      timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
+      startRecording();
     }
   };
 
@@ -59,6 +215,7 @@ export default function NewSongScreen() {
 
       const file = result.assets[0];
       setIsUploading(true);
+      setUploadSource('file');
 
       try {
         const response = await uploadSong(
@@ -76,6 +233,7 @@ export default function NewSongScreen() {
       } catch (err: any) {
         Alert.alert('Upload Failed', err.message || 'Could not upload the file. Make sure the backend is running.');
         setIsUploading(false);
+        setUploadSource(null);
       }
     } catch (err) {
       console.error('File pick error:', err);
@@ -146,13 +304,18 @@ export default function NewSongScreen() {
                   isRecording && styles.recordButtonActive,
                 ]}
                 onPress={toggleRecording}
+                disabled={isUploading}
                 activeOpacity={0.8}
               >
-                <MaterialIcons
-                  name={isRecording ? 'stop' : 'mic'}
-                  size={48}
-                  color={isRecording ? Colors.onErrorContainer : Colors.onPrimary}
-                />
+                {isUploading && uploadSource === 'record' ? (
+                  <ActivityIndicator color={Colors.onPrimary} size="large" />
+                ) : (
+                  <MaterialIcons
+                    name={isRecording ? 'stop' : 'mic'}
+                    size={48}
+                    color={isRecording ? Colors.onErrorContainer : Colors.onPrimary}
+                  />
+                )}
               </TouchableOpacity>
 
               <View style={styles.recordTextArea}>
@@ -160,10 +323,12 @@ export default function NewSongScreen() {
                 <Text
                   style={[
                     styles.recordStatus,
-                    isRecording && styles.recordStatusActive,
+                    (isRecording || (isUploading && uploadSource === 'record')) && styles.recordStatusActive,
                   ]}
                 >
-                  {isRecording
+                  {isUploading && uploadSource === 'record'
+                    ? 'Uploading and analyzing...'
+                    : isRecording
                     ? `Recording... (${formatTime(recordingTime)})`
                     : 'Tap to start listening'}
                 </Text>
@@ -188,10 +353,10 @@ export default function NewSongScreen() {
             <TouchableOpacity
               style={styles.chooseFileBtn}
               onPress={handleFilePick}
-              disabled={isUploading}
+              disabled={isUploading || isRecording}
               activeOpacity={0.8}
             >
-              {isUploading ? (
+              {isUploading && uploadSource === 'file' ? (
                 <ActivityIndicator color={Colors.onSurface} />
               ) : (
                 <Text style={styles.chooseFileBtnText}>Choose File</Text>
