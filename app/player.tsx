@@ -29,6 +29,8 @@ export default function PlayerScreen() {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeChordIndex, setActiveChordIndex] = useState(0);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [isMetronomeEnabled, setIsMetronomeEnabled] = useState(false);
 
   // Edit modal
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -37,6 +39,14 @@ export default function PlayerScreen() {
 
   const soundRef = useRef<Audio.Sound | null>(null);
   const timelineScrollRef = useRef<ScrollView>(null);
+  const playheadRef = useRef<View>(null);
+  const progressFillRef = useRef<View>(null);
+  const lastPositionSecondsRef = useRef(0);
+  const lastUpdateTimestampRef = useRef(0);
+  const isPlayingRef = useRef(false);
+  const isMetronomeEnabledRef = useRef(false);
+  const metronomeSoundRef = useRef<Audio.Sound | null>(null);
+  const lastPlayedBeatRef = useRef(-1);
 
   // Fetch song data
   useEffect(() => {
@@ -44,6 +54,57 @@ export default function PlayerScreen() {
       loadSongData();
     }
   }, [songId]);
+
+  // Sync metronome state ref
+  useEffect(() => {
+    isMetronomeEnabledRef.current = isMetronomeEnabled;
+  }, [isMetronomeEnabled]);
+
+  // Load metronome audio
+  useEffect(() => {
+    let soundObj: Audio.Sound | null = null;
+    const loadMetronome = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../assets/click.wav'),
+          { shouldPlay: false, volume: 0.8 }
+        );
+        soundObj = sound;
+        metronomeSoundRef.current = sound;
+      } catch (err) {
+        console.warn('Failed to load metronome sound:', err);
+      }
+    };
+    loadMetronome();
+
+    return () => {
+      if (soundObj) {
+        soundObj.unloadAsync().catch(() => {});
+      }
+    };
+  }, []);
+
+  const playMetronomeClick = async (beatIndex: number) => {
+    const isBeatOne = (beatIndex % 4) === 0;
+    try {
+      if (metronomeSoundRef.current) {
+        await metronomeSoundRef.current.setStatusAsync({
+          positionMillis: 0,
+          shouldPlay: true,
+          pitch: isBeatOne ? 1.4 : 1.0,
+          volume: isBeatOne ? 1.0 : 0.6,
+        });
+      }
+    } catch (err) {
+      // Ignore errors
+    }
+  };
+
+  const syncMetronomeBeat = (timeInSeconds: number) => {
+    const bpm = song?.bpm || 120;
+    const beatDuration = 60 / bpm;
+    lastPlayedBeatRef.current = Math.floor(timeInSeconds / beatDuration);
+  };
 
   const loadSongData = async () => {
     try {
@@ -79,7 +140,7 @@ export default function PlayerScreen() {
       const audioUrl = `http://localhost:3001/uploads/${song?.audio_url}`;
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioUrl },
-        { shouldPlay: false },
+        { shouldPlay: false, progressUpdateIntervalMillis: 50 },
         onPlaybackStatusUpdate
       );
       soundRef.current = sound;
@@ -92,9 +153,24 @@ export default function PlayerScreen() {
     if (status.isLoaded) {
       setCurrentTime(status.positionMillis / 1000);
       setIsPlaying(status.isPlaying);
+      isPlayingRef.current = status.isPlaying;
+      lastPositionSecondsRef.current = status.positionMillis / 1000;
+      lastUpdateTimestampRef.current = performance.now();
+
+      // If we just loaded or jumped, align the beat tracker
+      const bpm = song?.bpm || 120;
+      const beatDuration = 60 / bpm;
+      const currentBeat = Math.floor((status.positionMillis / 1000) / beatDuration);
+      if (Math.abs(lastPlayedBeatRef.current - currentBeat) > 1) {
+        lastPlayedBeatRef.current = currentBeat;
+      }
+
       if (status.didJustFinish) {
         setIsPlaying(false);
+        isPlayingRef.current = false;
         setCurrentTime(0);
+        lastPositionSecondsRef.current = 0;
+        lastPlayedBeatRef.current = -1;
         soundRef.current?.setPositionAsync(0).catch(() => {});
       }
     }
@@ -114,13 +190,21 @@ export default function PlayerScreen() {
     setActiveChordIndex(idx);
   }, [currentTime, chords]);
 
+  const updateTimingRefs = (seconds: number) => {
+    lastPositionSecondsRef.current = seconds;
+    lastUpdateTimestampRef.current = performance.now();
+  };
+
   const togglePlayback = async () => {
     if (!soundRef.current) return;
     try {
       if (isPlaying) {
         await soundRef.current.pauseAsync();
+        isPlayingRef.current = false;
       } else {
         await soundRef.current.playAsync();
+        isPlayingRef.current = true;
+        lastUpdateTimestampRef.current = performance.now();
       }
     } catch (err) {
       console.error('Toggle playback error:', err);
@@ -132,6 +216,8 @@ export default function PlayerScreen() {
       const nextTime = chords[activeChordIndex + 1].time_seconds;
       await soundRef.current.setPositionAsync(nextTime * 1000);
       setCurrentTime(nextTime);
+      updateTimingRefs(nextTime);
+      syncMetronomeBeat(nextTime);
     }
   };
 
@@ -140,6 +226,8 @@ export default function PlayerScreen() {
       const prevTime = chords[activeChordIndex - 1].time_seconds;
       await soundRef.current.setPositionAsync(prevTime * 1000);
       setCurrentTime(prevTime);
+      updateTimingRefs(prevTime);
+      syncMetronomeBeat(prevTime);
     }
   };
 
@@ -148,19 +236,71 @@ export default function PlayerScreen() {
     try {
       await soundRef.current.setPositionAsync(chord.time_seconds * 1000);
       setCurrentTime(chord.time_seconds);
+      updateTimingRefs(chord.time_seconds);
+      syncMetronomeBeat(chord.time_seconds);
     } catch (err) {
       console.error('Seek error:', err);
     }
   };
 
-  // Auto-scroll the chord timeline to keep the active chord visible
+  // 60FPS requestAnimationFrame loop for ultra-smooth playhead and scroll tracking
+  const TRACK_WIDTH = Math.max(SCREEN_WIDTH * 4, (song?.duration || 0) * 80);
   useEffect(() => {
-    if (chords.length === 0 || !timelineScrollRef.current) return;
-    // Each chord bar has min width 60, proportional otherwise
-    // We estimate 80px per bar for a safe scroll offset
-    const estimatedOffset = Math.max(0, activeChordIndex * 80 - SCREEN_WIDTH / 2 + 40);
-    timelineScrollRef.current.scrollTo({ x: estimatedOffset, animated: true });
-  }, [activeChordIndex]);
+    let rafId: number;
+    const updateCursor = () => {
+      if (song && song.duration > 0) {
+        let estimatedTime = currentTime;
+        if (isPlayingRef.current) {
+          const elapsed = (performance.now() - lastUpdateTimestampRef.current) / 1000;
+          estimatedTime = Math.min(song.duration, lastPositionSecondsRef.current + elapsed);
+        }
+
+        const playheadX = (estimatedTime / song.duration) * TRACK_WIDTH;
+        const progressPercentVal = (estimatedTime / song.duration) * 100;
+
+        // Update playhead & progress fill directly via native style refs for 60fps smoothness
+        if (playheadRef.current) {
+          if (typeof playheadRef.current.setNativeProps === 'function') {
+            playheadRef.current.setNativeProps({ style: { left: playheadX } });
+          } else {
+            (playheadRef.current as any).style.left = `${playheadX}px`;
+          }
+        }
+
+        if (progressFillRef.current) {
+          if (typeof progressFillRef.current.setNativeProps === 'function') {
+            progressFillRef.current.setNativeProps({ style: { width: `${progressPercentVal}%` } });
+          } else {
+            (progressFillRef.current as any).style.width = `${progressPercentVal}%`;
+          }
+        }
+
+        // Metronome beat trigger logic
+        const bpm = song.bpm || 120;
+        const beatDuration = 60 / bpm;
+        const currentBeatIndex = Math.floor(estimatedTime / beatDuration);
+
+        if (currentBeatIndex !== lastPlayedBeatRef.current) {
+          if (isPlayingRef.current && currentBeatIndex > lastPlayedBeatRef.current && (currentBeatIndex - lastPlayedBeatRef.current) < 3) {
+            if (isMetronomeEnabledRef.current) {
+              playMetronomeClick(currentBeatIndex);
+            }
+          }
+          lastPlayedBeatRef.current = currentBeatIndex;
+        }
+
+        // Scroll the track under the playhead
+        if (!isUserScrolling && timelineScrollRef.current) {
+          const scrollTo = Math.max(0, playheadX - SCREEN_WIDTH / 2);
+          timelineScrollRef.current.scrollTo({ x: scrollTo, animated: false });
+        }
+      }
+      rafId = requestAnimationFrame(updateCursor);
+    };
+
+    rafId = requestAnimationFrame(updateCursor);
+    return () => cancelAnimationFrame(rafId);
+  }, [song, TRACK_WIDTH, isUserScrolling, currentTime]);
 
   const openEditModal = (chord: ChordEvent) => {
     setEditingChord(chord);
@@ -221,6 +361,20 @@ export default function PlayerScreen() {
         <View style={styles.songInfoLeft}>
           <Text style={styles.songTitle}>{song?.title || 'Loading...'}</Text>
           <Text style={styles.songArtist}>{song?.artist || 'Unknown Artist'}</Text>
+          {(song?.bpm || song?.key_name) && (
+            <View style={styles.badgeContainer}>
+              {song.key_name && (
+                <View style={styles.keyBadge}>
+                  <Text style={styles.keyText}>Key: {song.key_name}</Text>
+                </View>
+              )}
+              {song.bpm && (
+                <View style={styles.bpmBadge}>
+                  <Text style={styles.bpmText}>{song.bpm} BPM</Text>
+                </View>
+              )}
+            </View>
+          )}
         </View>
         <View style={styles.songActions}>
           <TouchableOpacity style={styles.actionBtn}>
@@ -274,59 +428,91 @@ export default function PlayerScreen() {
         </View>
       </View>
 
-      {/* Waveform Scrubber */}
+      {/* Scrollable Waveform Scrubber with Chord Markers */}
       <View style={styles.waveformSection}>
         <GlassCard style={styles.waveformCard}>
-          {/* Progress overlay */}
-          <View style={[styles.waveformProgress, { width: `${progressPercent}%` }]} />
+          <ScrollView
+            ref={timelineScrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.waveformScroll}
+            scrollEventThrottle={16}
+            onScrollBeginDrag={() => setIsUserScrolling(true)}
+            onScrollEndDrag={() => {
+              // Wait a moment after dragging stops to resume auto-scroll
+              setTimeout(() => setIsUserScrolling(false), 1500);
+            }}
+            onMomentumScrollEnd={() => setIsUserScrolling(false)}
+          >
+            <View style={[styles.waveformTrack, { width: TRACK_WIDTH }]}>
+              {/* Progress fill */}
+              <View ref={progressFillRef} style={styles.waveformProgress} />
 
-          {/* Waveform bars */}
-          <View style={styles.waveformBars}>
-            {Array.from({ length: 20 }).map((_, i) => {
-              const barHeight = 12 + Math.sin(i * 0.8) * 24 + Math.random() * 16;
-              const isPast = (i / 20) * 100 < progressPercent;
-              return (
-                <View
-                  key={i}
-                  style={[
-                    styles.waveformBar,
-                    {
-                      height: barHeight,
-                      backgroundColor: isPast ? Colors.primary : Colors.onSurfaceVariant,
-                      opacity: isPast ? 0.8 : 0.3,
-                    },
-                  ]}
-                />
-              );
-            })}
-          </View>
-
-          {/* Chord change markers */}
-          {chords.length > 0 && song && song.duration > 0 && chords.map((chord, index) => {
-            const markerPercent = (chord.time_seconds / song.duration) * 100;
-            const isPast = chord.time_seconds <= currentTime;
-            return (
-              <View
-                key={chord.id}
-                style={[
-                  styles.chordMarker,
-                  { left: `${markerPercent}%` },
-                  isPast && styles.chordMarkerPast,
-                ]}
-              >
-                <View style={[styles.chordMarkerTick, isPast && styles.chordMarkerTickPast]} />
-                <Text style={[styles.chordMarkerLabel, isPast && styles.chordMarkerLabelPast]} numberOfLines={1}>
-                  {chord.chord_label}
-                </Text>
+              {/* Waveform bars spread across full track width */}
+              <View style={styles.waveformBars}>
+                {Array.from({ length: Math.max(40, Math.floor(TRACK_WIDTH / 20)) }).map((_, i, arr) => {
+                  const barCount = arr.length;
+                  const barHeight = 14 + Math.sin(i * 0.15) * 22 + Math.random() * 14;
+                  const barPercent = (i / barCount) * 100;
+                  const isPast = barPercent < progressPercent;
+                  return (
+                    <View
+                      key={i}
+                      style={[
+                        styles.waveformBar,
+                        {
+                          height: barHeight,
+                          backgroundColor: isPast ? Colors.primary : Colors.onSurfaceVariant,
+                          opacity: isPast ? 0.8 : 0.25,
+                        },
+                      ]}
+                    />
+                  );
+                })}
               </View>
-            );
-          })}
 
-          {/* Time display */}
-          <Text style={styles.timeDisplay}>
-            {formatTime(currentTime)} / {formatTime(song?.duration || 0)}
-          </Text>
+              {/* Chord change markers */}
+              {chords.length > 0 && song && song.duration > 0 && chords.map((chord) => {
+                const markerX = (chord.time_seconds / song.duration) * TRACK_WIDTH;
+                const isPast = chord.time_seconds <= currentTime;
+                const isActive = chord.time_seconds <= currentTime &&
+                  (chords.indexOf(chord) === chords.length - 1 ||
+                    chords[chords.indexOf(chord) + 1].time_seconds > currentTime);
+                return (
+                  <TouchableOpacity
+                    key={chord.id}
+                    activeOpacity={0.7}
+                    onPress={() => seekToChord(chord)}
+                    style={[
+                      styles.chordMarker,
+                      { left: markerX },
+                    ]}
+                  >
+                    <View style={[
+                      styles.chordMarkerTick,
+                      isPast && styles.chordMarkerTickPast,
+                      isActive && styles.chordMarkerTickActive,
+                    ]} />
+                    <Text style={[
+                      styles.chordMarkerLabel,
+                      isPast && styles.chordMarkerLabelPast,
+                      isActive && styles.chordMarkerLabelActive,
+                    ]} numberOfLines={1}>
+                      {chord.chord_label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+
+              {/* Playhead line */}
+              <View ref={playheadRef} style={styles.playhead} />
+            </View>
+          </ScrollView>
         </GlassCard>
+        {/* Time display outside scroll so always visible */}
+        <Text style={styles.timeDisplay}>
+          {formatTime(currentTime)} / {formatTime(song?.duration || 0)}
+        </Text>
       </View>
 
       {/* Chord Dashboard Section (No scrolling, static) */}
@@ -406,8 +592,19 @@ export default function PlayerScreen() {
       {/* Playback Controls */}
       <View style={styles.controlsSection}>
         <View style={styles.controls}>
-          <TouchableOpacity style={styles.controlBtnSmall}>
-            <MaterialIcons name="shuffle" size={28} color={Colors.onSurfaceVariant} />
+          <TouchableOpacity
+            style={[
+              styles.controlBtnSmall,
+              isMetronomeEnabled && styles.metronomeActiveBtn
+            ]}
+            onPress={() => setIsMetronomeEnabled(!isMetronomeEnabled)}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons
+              name="av-timer"
+              size={28}
+              color={isMetronomeEnabled ? Colors.primary : Colors.onSurfaceVariant}
+            />
           </TouchableOpacity>
 
           <View style={styles.mainControls}>
@@ -556,71 +753,96 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   waveformCard: {
-    height: 88,
+    height: 80,
     borderRadius: 16,
-    justifyContent: 'center',
     overflow: 'hidden',
+  },
+  waveformScroll: {
+    flex: 1,
+  },
+  waveformTrack: {
+    height: '100%',
+    position: 'relative',
   },
   waveformProgress: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: `${Colors.primary}1A`,
-    borderRightWidth: 2,
-    borderRightColor: Colors.primary,
+    backgroundColor: `${Colors.primary}15`,
   },
   waveformBars: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     height: '100%',
   },
   waveformBar: {
     width: 3,
     borderRadius: 9999,
   },
+  playhead: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: Colors.primary,
+    zIndex: 10,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 6,
+  },
   chordMarker: {
     position: 'absolute',
     top: 0,
     bottom: 0,
+    width: 40,
+    marginLeft: -20,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
+    paddingBottom: 4,
     zIndex: 5,
   },
-  chordMarkerPast: {
-    opacity: 0.5,
-  },
   chordMarkerTick: {
+    position: 'absolute',
+    top: 0,
     width: 1.5,
-    height: '45%',
+    height: '50%',
     backgroundColor: Colors.secondary,
     borderRadius: 9999,
-    opacity: 0.7,
+    opacity: 0.6,
   },
   chordMarkerTickPast: {
     backgroundColor: Colors.primary,
-    opacity: 0.5,
+    opacity: 0.35,
+  },
+  chordMarkerTickActive: {
+    backgroundColor: Colors.primary,
+    opacity: 1,
   },
   chordMarkerLabel: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: 8,
+    fontSize: 11,
     color: Colors.secondary,
-    marginTop: 1,
-    opacity: 0.85,
+    opacity: 0.9,
   },
   chordMarkerLabelPast: {
+    color: Colors.onSurfaceVariant,
+    opacity: 0.45,
+  },
+  chordMarkerLabelActive: {
     color: Colors.primary,
-    opacity: 0.5,
+    opacity: 1,
   },
   timeDisplay: {
-    position: 'absolute',
-    bottom: 8,
-    right: 16,
     fontFamily: 'Inter-SemiBold',
     fontSize: 12,
     color: Colors.onSurfaceVariant,
+    textAlign: 'right',
+    marginTop: 6,
   },
   dashboardContainer: {
     flex: 1,
@@ -829,5 +1051,44 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-SemiBold',
     fontSize: 14,
     color: Colors.onPrimaryContainer,
+  },
+  // BPM & Key Badges
+  badgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  bpmBadge: {
+    backgroundColor: 'rgba(164, 230, 255, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(164, 230, 255, 0.25)',
+  },
+  bpmText: {
+    fontFamily: 'Inter',
+    fontSize: 11,
+    fontWeight: '600',
+    color: Colors.primary,
+  },
+  keyBadge: {
+    backgroundColor: 'rgba(218, 185, 255, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(218, 185, 255, 0.25)',
+  },
+  keyText: {
+    fontFamily: 'Inter',
+    fontSize: 11,
+    fontWeight: '600',
+    color: Colors.secondary,
+  },
+  metronomeActiveBtn: {
+    backgroundColor: 'rgba(164, 230, 255, 0.12)',
+    borderRadius: 12,
   },
 });

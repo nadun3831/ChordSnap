@@ -86,7 +86,8 @@ router.post('/', upload.single('audio'), async (req: Request, res: Response) => 
 // Async chord processing
 async function processChords(songId: string, audioPath: string) {
   try {
-    const chords = await engine.analyze(audioPath);
+    const result = await engine.analyze(audioPath);
+    const { chords, bpm, key } = result;
 
     // Calculate song duration from the last chord event
     const duration = chords.length > 0
@@ -105,10 +106,10 @@ async function processChords(songId: string, audioPath: string) {
 
     db.insertChordEvents(chordRecords);
 
-    // Update song status to done
-    db.updateSong(songId, { status: 'done', duration });
+    // Update song status to done with BPM and key
+    db.updateSong(songId, { status: 'done', duration, bpm, key_name: key });
 
-    console.log(`✅ Song ${songId}: ${chords.length} chords detected in ${duration.toFixed(1)}s`);
+    console.log(`✅ Song ${songId}: ${chords.length} chords, BPM=${bpm}, Key=${key}, duration=${duration.toFixed(1)}s`);
   } catch (err) {
     db.updateSong(songId, { status: 'failed' });
     throw err;

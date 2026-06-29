@@ -14,6 +14,8 @@ export interface Song {
   artist: string;
   audio_url: string;
   duration: number;
+  bpm?: number;
+  key_name?: string;
   status: 'uploading' | 'processing' | 'done' | 'failed';
   genre: string;
   created_at: string;

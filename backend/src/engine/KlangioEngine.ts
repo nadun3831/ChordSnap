@@ -1,4 +1,4 @@
-import { ChordDetectionEngine, ChordEvent } from './ChordDetectionEngine';
+import { ChordDetectionEngine, ChordEvent, AnalysisResult } from './ChordDetectionEngine';
 
 /**
  * KlangioEngine — Stub for Klangio Music Analysis API integration.
@@ -27,7 +27,7 @@ export class KlangioEngine implements ChordDetectionEngine {
     }
   }
 
-  async analyze(audioPath: string): Promise<ChordEvent[]> {
+  async analyze(audioPath: string): Promise<AnalysisResult> {
     if (!this.apiKey) {
       throw new Error(
         'Klangio API key not configured. Set KLANGIO_API_KEY environment variable or pass it to the constructor.'

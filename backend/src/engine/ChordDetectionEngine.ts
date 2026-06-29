@@ -15,9 +15,15 @@ export interface ChordEvent {
   confidence: number;
 }
 
+export interface AnalysisResult {
+  chords: ChordEvent[];
+  bpm: number;
+  key?: string;
+}
+
 export interface ChordDetectionEngine {
-  /** Analyze an audio file and return time-stamped chord events */
-  analyze(audioPath: string): Promise<ChordEvent[]>;
+  /** Analyze an audio file and return time-stamped chord events + metadata */
+  analyze(audioPath: string): Promise<AnalysisResult>;
   /** Display name of the engine */
   readonly name: string;
 }

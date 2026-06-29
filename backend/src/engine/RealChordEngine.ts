@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { ChordDetectionEngine, ChordEvent } from './ChordDetectionEngine';
+import { ChordDetectionEngine, ChordEvent, AnalysisResult } from './ChordDetectionEngine';
 
 /**
  * RealChordEngine — Beat-aligned chord detection with KEY DETECTION
@@ -356,7 +356,7 @@ function buildBeatGrid(
 export class RealChordEngine implements ChordDetectionEngine {
   readonly name = 'RealChordEngine (Beat + Key Detection)';
 
-  async analyze(audioPath: string): Promise<ChordEvent[]> {
+  async analyze(audioPath: string): Promise<AnalysisResult> {
     console.log(`🎵 RealChordEngine: Analyzing ${audioPath}`);
     const startTime = Date.now();
 
@@ -632,6 +632,6 @@ export class RealChordEngine implements ChordDetectionEngine {
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log(`✅ RealChordEngine: ${events.length} chords, Key=${key.name}, BPM=${bpm}, in ${elapsed}s`);
 
-    return events;
+    return { chords: events, bpm, key: key.name };
   }
 }

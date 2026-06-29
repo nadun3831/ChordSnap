@@ -1,4 +1,4 @@
-import { ChordDetectionEngine, ChordEvent } from './ChordDetectionEngine';
+import { ChordDetectionEngine, ChordEvent, AnalysisResult } from './ChordDetectionEngine';
 import fs from 'fs';
 import crypto from 'crypto';
 
@@ -39,7 +39,7 @@ function createRand(seed: number) {
 export class MockEngine implements ChordDetectionEngine {
   readonly name = 'MockEngine (Development)';
 
-  async analyze(audioPath: string): Promise<ChordEvent[]> {
+  async analyze(audioPath: string): Promise<AnalysisResult> {
     // Simulate processing time (1-3 seconds)
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 
@@ -76,6 +76,13 @@ export class MockEngine implements ChordDetectionEngine {
     // Generate a realistic song duration (2-5 minutes, deterministic based on seed)
     const songDuration = 120 + rand() * 180;
 
+    // Generate a mock BPM (80-140 BPM, rounded to nearest whole number)
+    const bpm = Math.round(80 + rand() * 60);
+
+    // Generate a mock Key name
+    const keys = ['C', 'G', 'D', 'A', 'Am', 'Em', 'Dm'];
+    const key = keys[Math.floor(rand() * keys.length)];
+
     // Generate chord events across the song duration
     const events: ChordEvent[] = [];
     let currentTime = 0;
@@ -97,6 +104,10 @@ export class MockEngine implements ChordDetectionEngine {
       chordIndex++;
     }
 
-    return events;
+    return {
+      chords: events,
+      bpm,
+      key,
+    };
   }
 }
