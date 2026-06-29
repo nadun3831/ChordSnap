@@ -36,6 +36,7 @@ export default function PlayerScreen() {
   const [editLabel, setEditLabel] = useState('');
 
   const soundRef = useRef<Audio.Sound | null>(null);
+  const timelineScrollRef = useRef<ScrollView>(null);
 
   // Fetch song data
   useEffect(() => {
@@ -141,6 +142,25 @@ export default function PlayerScreen() {
       setCurrentTime(prevTime);
     }
   };
+
+  const seekToChord = async (chord: ChordEvent) => {
+    if (!soundRef.current) return;
+    try {
+      await soundRef.current.setPositionAsync(chord.time_seconds * 1000);
+      setCurrentTime(chord.time_seconds);
+    } catch (err) {
+      console.error('Seek error:', err);
+    }
+  };
+
+  // Auto-scroll the chord timeline to keep the active chord visible
+  useEffect(() => {
+    if (chords.length === 0 || !timelineScrollRef.current) return;
+    // Each chord bar has min width 60, proportional otherwise
+    // We estimate 80px per bar for a safe scroll offset
+    const estimatedOffset = Math.max(0, activeChordIndex * 80 - SCREEN_WIDTH / 2 + 40);
+    timelineScrollRef.current.scrollTo({ x: estimatedOffset, animated: true });
+  }, [activeChordIndex]);
 
   const openEditModal = (chord: ChordEvent) => {
     setEditingChord(chord);
@@ -281,6 +301,27 @@ export default function PlayerScreen() {
             })}
           </View>
 
+          {/* Chord change markers */}
+          {chords.length > 0 && song && song.duration > 0 && chords.map((chord, index) => {
+            const markerPercent = (chord.time_seconds / song.duration) * 100;
+            const isPast = chord.time_seconds <= currentTime;
+            return (
+              <View
+                key={chord.id}
+                style={[
+                  styles.chordMarker,
+                  { left: `${markerPercent}%` },
+                  isPast && styles.chordMarkerPast,
+                ]}
+              >
+                <View style={[styles.chordMarkerTick, isPast && styles.chordMarkerTickPast]} />
+                <Text style={[styles.chordMarkerLabel, isPast && styles.chordMarkerLabelPast]} numberOfLines={1}>
+                  {chord.chord_label}
+                </Text>
+              </View>
+            );
+          })}
+
           {/* Time display */}
           <Text style={styles.timeDisplay}>
             {formatTime(currentTime)} / {formatTime(song?.duration || 0)}
@@ -359,33 +400,7 @@ export default function PlayerScreen() {
           </View>
         </View>
 
-        {/* Upcoming Timeline Strip */}
-        {chords.length > 0 && (
-          <View style={styles.timelineStrip}>
-            <Text style={styles.timelineTitle}>COMING UP NEXT:</Text>
-            <View style={styles.timelineItems}>
-              {Array.from({ length: 4 }).map((_, i) => {
-                const targetIndex = activeChordIndex + 1 + i;
-                if (targetIndex >= chords.length) {
-                  // Fill remaining slots with empty indicators to maintain width layout symmetry
-                  return (
-                    <View key={`empty-${i}`} style={[styles.timelineItem, { opacity: 0.2 }]}>
-                      <Text style={styles.timelineChordLabel}>—</Text>
-                      <Text style={styles.timelineChordTime}>--:--</Text>
-                    </View>
-                  );
-                }
-                const upcomingChord = chords[targetIndex];
-                return (
-                  <View key={upcomingChord.id} style={styles.timelineItem}>
-                    <Text style={styles.timelineChordLabel}>{upcomingChord.chord_label}</Text>
-                    <Text style={styles.timelineChordTime}>{formatTime(upcomingChord.time_seconds)}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-        )}
+
       </View>
 
       {/* Playback Controls */}
@@ -566,6 +581,39 @@ const styles = StyleSheet.create({
     width: 3,
     borderRadius: 9999,
   },
+  chordMarker: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    zIndex: 5,
+  },
+  chordMarkerPast: {
+    opacity: 0.5,
+  },
+  chordMarkerTick: {
+    width: 1.5,
+    height: '45%',
+    backgroundColor: Colors.secondary,
+    borderRadius: 9999,
+    opacity: 0.7,
+  },
+  chordMarkerTickPast: {
+    backgroundColor: Colors.primary,
+    opacity: 0.5,
+  },
+  chordMarkerLabel: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 8,
+    color: Colors.secondary,
+    marginTop: 1,
+    opacity: 0.85,
+  },
+  chordMarkerLabelPast: {
+    color: Colors.primary,
+    opacity: 0.5,
+  },
   timeDisplay: {
     position: 'absolute',
     bottom: 8,
@@ -673,50 +721,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.onSurfaceVariant,
   },
-  timelineStrip: {
-    marginTop: 20,
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    borderRadius: 16,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
-  },
-  timelineTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 10,
-    letterSpacing: 0.5,
-    color: Colors.onSurfaceVariant,
-    opacity: 0.7,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  timelineItems: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    gap: 8,
-  },
-  timelineItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-  },
-  timelineChordLabel: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 13,
-    color: Colors.secondary,
-  },
-  timelineChordTime: {
-    fontFamily: 'Inter',
-    fontSize: 9,
-    color: Colors.onSurfaceVariant,
-    opacity: 0.6,
-  },
+
   controlsSection: {
     backgroundColor: `${Colors.surfaceContainer}CC`,
     paddingHorizontal: 24,

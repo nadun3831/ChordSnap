@@ -453,8 +453,8 @@ export class RealChordEngine implements ChordDetectionEngine {
     const allowedChords = getDiatonicChords(key.root, key.mode);
     console.log(`   🎹 Allowed chords: ${Array.from(allowedChords).join(', ')}`);
 
-    // ── 7. Match chord at each bar (4-beat group) ──
-    const BEATS_PER_CHORD = 4;
+    // ── 7. Detect chord at EVERY INDIVIDUAL BEAT ──
+    const BEATS_PER_BAR = 4;
 
     interface BeatChord {
       time: number;
@@ -462,44 +462,133 @@ export class RealChordEngine implements ChordDetectionEngine {
       confidence: number;
     }
 
-    const chordPerBar: BeatChord[] = [];
+    const chordPerBeat: BeatChord[] = [];
 
-    for (let i = 0; i < beatChromas.length; i += BEATS_PER_CHORD) {
-      const groupEnd = Math.min(i + BEATS_PER_CHORD, beatChromas.length);
-      const avgChroma = new Array(12).fill(0);
-      let count = 0;
-      let totalEnergy = 0;
+    for (let i = 0; i < beatChromas.length; i++) {
+      const bc = beatChromas[i];
 
-      for (let j = i; j < groupEnd; j++) {
-        for (let k = 0; k < 12; k++) {
-          avgChroma[k] += beatChromas[j].chroma[k];
-        }
-        totalEnergy += beatChromas[j].energy;
-        count++;
-      }
-
-      for (let k = 0; k < 12; k++) {
-        avgChroma[k] /= count;
-      }
-
-      const barTime = beatChromas[i].beatTime;
-
-      if (totalEnergy / count < 1e-6) {
-        chordPerBar.push({ time: barTime, label: 'N', confidence: 0 });
+      if (bc.energy < 1e-6) {
+        chordPerBeat.push({ time: bc.beatTime, label: 'N', confidence: 0 });
         continue;
       }
 
-      const match = matchChordInKey(avgChroma, allowedChords);
+      const match = matchChordInKey(bc.chroma, allowedChords);
       if (match.confidence < MIN_CONFIDENCE) {
-        chordPerBar.push({ time: barTime, label: 'N', confidence: match.confidence });
+        chordPerBeat.push({ time: bc.beatTime, label: 'N', confidence: match.confidence });
       } else {
-        chordPerBar.push({ time: barTime, label: match.label, confidence: match.confidence });
+        chordPerBeat.push({ time: bc.beatTime, label: match.label, confidence: match.confidence });
       }
     }
 
-    console.log(`   Matched chords for ${chordPerBar.length} bars`);
+    console.log(`   Detected chords at ${chordPerBeat.length} individual beats`);
 
-    // ── 8. Merge consecutive identical chords into events ──
+    // ── 8. Snap chord changes to bar/half-bar boundaries via majority voting ──
+    //
+    // For each 4-beat bar, we check:
+    //   a) If all/most beats agree → one chord for the whole bar
+    //   b) If the first half (beats 0-1) differs from second half (beats 2-3)
+    //      → allow a chord split at the half-bar boundary
+    //   c) Otherwise, majority wins for the whole bar
+    //
+    // This prevents chord changes from landing on beat 2 or beat 4
+    // (mid-bar positions that sound wrong musically).
+
+    interface BarChord {
+      time: number;
+      label: string;
+      confidence: number;
+    }
+
+    const chordPerBar: BarChord[] = [];
+
+    /** Pick the majority chord from a slice of beat chords */
+    function majorityVote(beats: BeatChord[]): { label: string; avgConf: number } {
+      const counts = new Map<string, { count: number; totalConf: number }>();
+      for (const b of beats) {
+        const entry = counts.get(b.label) || { count: 0, totalConf: 0 };
+        entry.count++;
+        entry.totalConf += b.confidence;
+        counts.set(b.label, entry);
+      }
+
+      let bestLabel = 'N';
+      let bestCount = 0;
+      let bestConf = 0;
+
+      for (const [label, { count, totalConf }] of counts) {
+        if (count > bestCount || (count === bestCount && totalConf > bestConf)) {
+          bestLabel = label;
+          bestCount = count;
+          bestConf = totalConf;
+        }
+      }
+
+      return { label: bestLabel, avgConf: bestConf / beats.length };
+    }
+
+    for (let i = 0; i < chordPerBeat.length; i += BEATS_PER_BAR) {
+      const barEnd = Math.min(i + BEATS_PER_BAR, chordPerBeat.length);
+      const barBeats = chordPerBeat.slice(i, barEnd);
+
+      if (barBeats.length < 2) {
+        // Not enough beats for a full bar — just use the single beat
+        chordPerBar.push({
+          time: barBeats[0].time,
+          label: barBeats[0].label,
+          confidence: barBeats[0].confidence,
+        });
+        continue;
+      }
+
+      // Full-bar majority
+      const fullVote = majorityVote(barBeats);
+
+      // Check for a clear half-bar split
+      const halfPoint = Math.floor(barBeats.length / 2);
+      const firstHalf = barBeats.slice(0, halfPoint);
+      const secondHalf = barBeats.slice(halfPoint);
+
+      const firstVote = majorityVote(firstHalf);
+      const secondVote = majorityVote(secondHalf);
+
+      // A half-bar split is valid if:
+      //  - First and second half have different chords
+      //  - Both halves are internally consistent (non-N chords)
+      //  - Each half's chord covers all its beats (strong agreement)
+      const firstAllAgree = firstHalf.every(b => b.label === firstVote.label || b.label === 'N');
+      const secondAllAgree = secondHalf.every(b => b.label === secondVote.label || b.label === 'N');
+      const shouldSplit =
+        firstVote.label !== secondVote.label &&
+        firstVote.label !== 'N' &&
+        secondVote.label !== 'N' &&
+        firstAllAgree &&
+        secondAllAgree;
+
+      if (shouldSplit) {
+        // Two chords in this bar, split at the half-bar boundary
+        chordPerBar.push({
+          time: firstHalf[0].time,
+          label: firstVote.label,
+          confidence: firstVote.avgConf,
+        });
+        chordPerBar.push({
+          time: secondHalf[0].time,
+          label: secondVote.label,
+          confidence: secondVote.avgConf,
+        });
+      } else {
+        // One chord for the whole bar — majority wins
+        chordPerBar.push({
+          time: barBeats[0].time,
+          label: fullVote.label,
+          confidence: fullVote.avgConf,
+        });
+      }
+    }
+
+    console.log(`   Snapped to ${chordPerBar.length} bar/half-bar segments`);
+
+    // ── 9. Merge consecutive identical chords into events ──
     const events: ChordEvent[] = [];
     let eventIndex = 0;
 
