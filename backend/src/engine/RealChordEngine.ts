@@ -257,38 +257,51 @@ const MIN_CONFIDENCE = 0.55;
 function computeOnsetEnvelope(samples: Float32Array, sampleRate: number): { envelope: number[]; times: number[] } {
   const envelope: number[] = [];
   const times: number[] = [];
-  let prevSpectrum: number[] | null = null;
+  
+  const frameSize = 2048;
+  const hop = 512;
 
-  for (let offset = 0; offset + FRAME_SIZE <= samples.length; offset += HOP) {
-    const frame = samples.slice(offset, offset + FRAME_SIZE);
+  let prevEnergy = 0;
 
-    const numBands = 40;
-    const bandSize = Math.floor(FRAME_SIZE / numBands);
-    const spectrum: number[] = [];
-
-    for (let b = 0; b < numBands; b++) {
-      let bandEnergy = 0;
-      const start = b * bandSize;
-      for (let i = start; i < start + bandSize && i < FRAME_SIZE; i++) {
-        bandEnergy += frame[i] * frame[i];
-      }
-      spectrum.push(bandEnergy);
+  // Start offset at 1 to allow high-pass difference
+  for (let offset = 1; offset + frameSize <= samples.length; offset += hop) {
+    let energy = 0;
+    for (let i = 0; i < frameSize; i++) {
+      // First-order difference acts as a simple high-pass filter
+      const diffSample = samples[offset + i] - samples[offset + i - 1];
+      energy += diffSample * diffSample;
     }
+    energy = Math.sqrt(energy / frameSize); // RMS Energy of high-passed frame
 
-    if (prevSpectrum) {
-      let flux = 0;
-      for (let b = 0; b < numBands; b++) {
-        const diff = spectrum[b] - prevSpectrum[b];
-        if (diff > 0) flux += diff;
-      }
-      envelope.push(flux);
-      times.push(offset / sampleRate);
-    }
+    // Log compression
+    const logEnergy = Math.log1p(energy * 1000);
+    const logPrevEnergy = Math.log1p(prevEnergy * 1000);
 
-    prevSpectrum = spectrum;
+    // Onset strength is the difference
+    const diff = logEnergy - logPrevEnergy;
+    envelope.push(diff > 0 ? diff : 0);
+    times.push((offset + frameSize / 2) / sampleRate);
+
+    prevEnergy = energy;
   }
 
-  return { envelope, times };
+  // Smooth the envelope with a moving average filter (~50ms window) to reduce noise
+  const smoothed: number[] = [];
+  const windowSize = 5;
+  for (let i = 0; i < envelope.length; i++) {
+    let sum = 0;
+    let count = 0;
+    for (let w = -Math.floor(windowSize / 2); w <= Math.floor(windowSize / 2); w++) {
+      const idx = i + w;
+      if (idx >= 0 && idx < envelope.length) {
+        sum += envelope[idx];
+        count++;
+      }
+    }
+    smoothed.push(sum / count);
+  }
+
+  return { envelope: smoothed, times };
 }
 
 function detectBPM(envelope: number[], sampleRate: number): number {
@@ -300,9 +313,8 @@ function detectBPM(envelope: number[], sampleRate: number): number {
   const mean = envelope.reduce((s, v) => s + v, 0) / N;
   const normed = envelope.map(v => v - mean);
 
-  let bestLag = minLag;
-  let bestCorr = -Infinity;
-
+  // 1. Calculate autocorrelation for all valid lags
+  const corrArray = new Array(maxLag + 2).fill(0);
   for (let lag = minLag; lag <= Math.min(maxLag, N - 1); lag++) {
     let corr = 0;
     let count = 0;
@@ -310,16 +322,84 @@ function detectBPM(envelope: number[], sampleRate: number): number {
       corr += normed[i] * normed[i + lag];
       count++;
     }
-    corr /= count;
+    corrArray[lag] = count > 0 ? corr / count : 0;
+  }
 
-    if (corr > bestCorr) {
-      bestCorr = corr;
-      bestLag = lag;
+  // 2. Find local peaks (local maxima) in the autocorrelation curve with quadratic interpolation
+  interface AutocorrPeak {
+    lag: number;
+    corr: number;
+    exactLag: number;
+  }
+  const peaks: AutocorrPeak[] = [];
+  for (let lag = minLag + 1; lag < Math.min(maxLag, N - 1); lag++) {
+    if (corrArray[lag] > corrArray[lag - 1] && corrArray[lag] > corrArray[lag + 1]) {
+      const y0 = corrArray[lag - 1];
+      const y1 = corrArray[lag];
+      const y2 = corrArray[lag + 1];
+
+      let p = 0;
+      const denom = 2 * (y0 - 2 * y1 + y2);
+      if (Math.abs(denom) > 1e-9) {
+        p = (y0 - y2) / denom;
+      }
+      const exactLag = lag + p;
+      peaks.push({ lag, corr: y1, exactLag });
     }
   }
 
-  const bpm = 60 / (bestLag * hopDuration);
-  return Math.round(bpm * 10) / 10;
+  // Fallback if no local peaks found
+  if (peaks.length === 0) {
+    let bestLag = minLag;
+    let bestCorr = -Infinity;
+    for (let lag = minLag; lag <= Math.min(maxLag, N - 1); lag++) {
+      if (corrArray[lag] > bestCorr) {
+        bestCorr = corrArray[lag];
+        bestLag = lag;
+      }
+    }
+    const bpm = 60 / (bestLag * hopDuration);
+    return Math.round(bpm * 100) / 100;
+  }
+
+  // Sort peaks by correlation strength
+  peaks.sort((a, b) => b.corr - a.corr);
+  const maxCorr = peaks[0].corr;
+
+  console.log('   🔍 Strong Autocorrelation Peaks:');
+  for (const p of peaks.slice(0, 5)) {
+    const bpmVal = 60 / (p.exactLag * hopDuration);
+    console.log(`      BPM ${bpmVal.toFixed(2)} (Corr: ${p.corr.toFixed(5)} | Ratio: ${(p.corr / maxCorr).toFixed(2)})`);
+  }
+
+  // Keep strong candidate peaks (at least 35% of the maximum correlation to allow octave checking)
+  const strongPeaks = peaks.filter(p => p.corr >= maxCorr * 0.35);
+
+  // 3. Harmonic / Octave Correction:
+  // Prefer faster candidate tempos if they have a harmonic relationship with a slower strong candidate
+  let bestPeak = strongPeaks[0];
+
+  for (const p of strongPeaks) {
+    for (const slower of strongPeaks) {
+      if (slower.exactLag > p.exactLag) {
+        const ratio = slower.exactLag / p.exactLag;
+        const isHarmonic = 
+          Math.abs(ratio - 1.5) < 0.1 ||
+          Math.abs(ratio - 2.0) < 0.1 ||
+          Math.abs(ratio - 3.0) < 0.1;
+
+        const bpmVal = 60 / (p.exactLag * hopDuration);
+        if (isHarmonic && bpmVal >= 65 && bpmVal <= 180) {
+          if (p.exactLag < bestPeak.exactLag) {
+            bestPeak = p;
+          }
+        }
+      }
+    }
+  }
+
+  const bpm = 60 / (bestPeak.exactLag * hopDuration);
+  return Math.round(bpm * 100) / 100;
 }
 
 function buildBeatGrid(
@@ -328,25 +408,110 @@ function buildBeatGrid(
   bpm: number,
   totalDuration: number,
 ): number[] {
+  const beatInterval = 60 / bpm;
   const maxOnset = Math.max(...envelope);
   const threshold = maxOnset * 0.15;
 
-  let firstBeatTime = 0;
-  for (let i = 0; i < envelope.length; i++) {
-    if (envelope[i] > threshold) {
-      firstBeatTime = times[i];
-      break;
+  // 1. Find all candidate onset peaks
+  interface Peak {
+    time: number;
+    value: number;
+  }
+  const peaks: Peak[] = [];
+  for (let i = 1; i < envelope.length - 1; i++) {
+    if (envelope[i] > envelope[i - 1] && envelope[i] > envelope[i + 1] && envelope[i] > threshold) {
+      peaks.push({ time: times[i], value: envelope[i] });
     }
   }
 
-  const beatInterval = 60 / bpm;
-  const beats: number[] = [];
+  // 2. Find the first strong beat offset in the first 15 seconds
+  let firstBeatOffset = 0;
+  const earlySection = Math.min(15, totalDuration);
+  const earlyPeaks = peaks.filter(p => p.time < earlySection);
+  if (earlyPeaks.length > 0) {
+    earlyPeaks.sort((a, b) => b.value - a.value);
+    firstBeatOffset = earlyPeaks[0].time;
+  } else {
+    // Fallback to first above threshold
+    for (let i = 0; i < envelope.length; i++) {
+      if (envelope[i] > threshold) {
+        firstBeatOffset = times[i];
+        break;
+      }
+    }
+  }
 
-  for (let t = firstBeatTime; t < totalDuration; t += beatInterval) {
-    beats.push(Math.round(t * 100) / 100);
+  // 3. Project the grid backward to the start of the song
+  let startOffset = firstBeatOffset;
+  while (startOffset - beatInterval >= 0) {
+    startOffset -= beatInterval;
+  }
+
+  // 4. Generate the constant-tempo beat grid
+  const beats: number[] = [];
+  let currentTime = startOffset;
+  while (currentTime < totalDuration) {
+    beats.push(Math.round(currentTime * 100) / 100);
+    currentTime += beatInterval;
   }
 
   return beats;
+}
+
+// ─────────────────────────────────────────────
+// Segment-based Chroma Extraction
+// ─────────────────────────────────────────────
+
+function extractAverageChroma(
+  samples: Float32Array,
+  sampleRate: number,
+  startTime: number,
+  endTime: number,
+  Meyda: any,
+): number[] {
+  const startSample = Math.floor(startTime * sampleRate);
+  const endSample = Math.min(samples.length, Math.floor(endTime * sampleRate));
+  
+  if (endSample - startSample < 1024) {
+    return new Array(12).fill(0);
+  }
+
+  const segment = samples.slice(startSample, endSample);
+  const frameSize = 4096;
+  const hop = 2048;
+  
+  Meyda.bufferSize = frameSize;
+  Meyda.sampleRate = sampleRate;
+  
+  const sumChroma = new Array(12).fill(0);
+  let count = 0;
+
+  for (let offset = 0; offset + frameSize <= segment.length; offset += hop) {
+    const frame = segment.slice(offset, offset + frameSize);
+    
+    // Calculate energy to discard silent frames
+    let energy = 0;
+    for (let i = 0; i < frame.length; i++) {
+      energy += frame[i] * frame[i];
+    }
+    energy /= frame.length;
+    if (energy < 1e-6) continue;
+
+    try {
+      const chroma = Meyda.extract('chroma', frame);
+      if (chroma && chroma.length === 12) {
+        for (let k = 0; k < 12; k++) {
+          sumChroma[k] += chroma[k];
+        }
+        count++;
+      }
+    } catch {
+      // Ignore frame extraction error
+    }
+  }
+
+  if (count === 0) return new Array(12).fill(0);
+  return sumChroma.map(val => val / count);
 }
 
 // ─────────────────────────────────────────────
@@ -390,242 +555,113 @@ export class RealChordEngine implements ChordDetectionEngine {
     const beats = buildBeatGrid(envelope, onsetTimes, bpm, totalDuration);
     console.log(`   🎯 Beat grid: ${beats.length} beats (interval: ${(60 / bpm).toFixed(3)}s)`);
 
-    // ── 4. Extract chroma per beat ──
+    // ── 4. Extract chroma per bar & half-bar ──
     const Meyda = require('meyda');
-    const CHROMA_BUFFER = 8192;
-    Meyda.bufferSize = CHROMA_BUFFER;
-    Meyda.sampleRate = sampleRate;
-
-    interface BeatChroma {
-      beatTime: number;
-      chroma: number[];
-      energy: number;
+    const BEATS_PER_BAR = 4;
+    
+    interface BarChroma {
+      barIndex: number;
+      startTime: number;
+      endTime: number;
+      beats: number[];
+      chromaWhole: number[];
+      chromaFirstHalf: number[];
+      chromaSecondHalf: number[];
     }
 
-    const beatChromas: BeatChroma[] = [];
-    const overallChroma = new Array(12).fill(0); // accumulate for key detection
-    let chromaCount = 0;
+    const barChromas: BarChroma[] = [];
+    const overallChroma = new Array(12).fill(0);
 
-    for (const beatTime of beats) {
-      const centerSample = Math.floor(beatTime * sampleRate);
-      const halfWindow = Math.floor(CHROMA_BUFFER / 2);
-      const start = Math.max(0, centerSample - halfWindow);
+    for (let i = 0; i < beats.length; i += BEATS_PER_BAR) {
+      const barBeats = beats.slice(i, i + BEATS_PER_BAR);
+      if (barBeats.length === 0) continue;
 
-      if (start + CHROMA_BUFFER > samples.length) continue;
-
-      const frame = samples.slice(start, start + CHROMA_BUFFER);
-
-      let energy = 0;
-      for (let i = 0; i < frame.length; i++) {
-        energy += frame[i] * frame[i];
-      }
-      energy /= frame.length;
-
-      if (energy < 1e-6) {
-        beatChromas.push({ beatTime, chroma: new Array(12).fill(0), energy });
-        continue;
+      const startTime = barBeats[0];
+      const endTime = (i + BEATS_PER_BAR < beats.length) ? beats[i + BEATS_PER_BAR] : totalDuration;
+      
+      // Determine half-bar middle timestamp
+      let midTime = (startTime + endTime) / 2;
+      if (barBeats.length >= 3) {
+        midTime = barBeats[2];
       }
 
-      try {
-        const chroma = Meyda.extract('chroma', frame);
-        if (chroma && chroma.length === 12) {
-          const chromaArr = Array.from(chroma) as number[];
-          beatChromas.push({ beatTime, chroma: chromaArr, energy });
+      // Average chroma over the whole bar and each half-bar segment
+      const chromaWhole = extractAverageChroma(samples, sampleRate, startTime, endTime, Meyda);
+      const chromaFirstHalf = extractAverageChroma(samples, sampleRate, startTime, midTime, Meyda);
+      const chromaSecondHalf = extractAverageChroma(samples, sampleRate, midTime, endTime, Meyda);
 
-          // Accumulate for key detection (weighted by energy)
-          for (let k = 0; k < 12; k++) {
-            overallChroma[k] += chromaArr[k] * energy;
-          }
-          chromaCount++;
-        }
-      } catch {
-        // Skip
+      barChromas.push({
+        barIndex: i / BEATS_PER_BAR,
+        startTime,
+        endTime,
+        beats: barBeats,
+        chromaWhole,
+        chromaFirstHalf,
+        chromaSecondHalf,
+      });
+
+      // Accumulate for overall key detection
+      for (let k = 0; k < 12; k++) {
+        overallChroma[k] += chromaWhole[k];
       }
     }
 
-    console.log(`   Extracted chroma for ${beatChromas.length} beats`);
+    console.log(`   Processed chroma for ${barChromas.length} bars`);
 
     // ── 5. DETECT KEY ──
     const key = detectKey(overallChroma);
     console.log(`   🎼 Detected Key: ${key.name} (correlation: ${key.correlation.toFixed(3)})`);
 
-    // ── 6. Build allowed chord set for this key ──
+    // ── 6. Build allowed chord set ──
     const allowedChords = getDiatonicChords(key.root, key.mode);
     console.log(`   🎹 Allowed chords: ${Array.from(allowedChords).join(', ')}`);
 
-    // ── 7. Detect chord at EVERY INDIVIDUAL BEAT ──
-    const BEATS_PER_BAR = 4;
-
-    interface BeatChord {
-      time: number;
-      label: string;
-      confidence: number;
-    }
-
-    const chordPerBeat: BeatChord[] = [];
-
-    for (let i = 0; i < beatChromas.length; i++) {
-      const bc = beatChromas[i];
-
-      if (bc.energy < 1e-6) {
-        chordPerBeat.push({ time: bc.beatTime, label: 'N', confidence: 0 });
-        continue;
-      }
-
-      const match = matchChordInKey(bc.chroma, allowedChords);
-      if (match.confidence < MIN_CONFIDENCE) {
-        chordPerBeat.push({ time: bc.beatTime, label: 'N', confidence: match.confidence });
-      } else {
-        chordPerBeat.push({ time: bc.beatTime, label: match.label, confidence: match.confidence });
-      }
-    }
-
-    console.log(`   Detected chords at ${chordPerBeat.length} individual beats`);
-
-    // ── 8. Snap chord changes to bar/half-bar boundaries via majority voting ──
-    //
-    // For each 4-beat bar, we check:
-    //   a) If all/most beats agree → one chord for the whole bar
-    //   b) If the first half (beats 0-1) differs from second half (beats 2-3)
-    //      → allow a chord split at the half-bar boundary
-    //   c) Otherwise, majority wins for the whole bar
-    //
-    // This prevents chord changes from landing on beat 2 or beat 4
-    // (mid-bar positions that sound wrong musically).
-
-    interface BarChord {
-      time: number;
-      label: string;
-      confidence: number;
-    }
-
-    const chordPerBar: BarChord[] = [];
-
-    /** Pick the majority chord from a slice of beat chords */
-    function majorityVote(beats: BeatChord[]): { label: string; avgConf: number } {
-      const counts = new Map<string, { count: number; totalConf: number }>();
-      for (const b of beats) {
-        const entry = counts.get(b.label) || { count: 0, totalConf: 0 };
-        entry.count++;
-        entry.totalConf += b.confidence;
-        counts.set(b.label, entry);
-      }
-
-      let bestLabel = 'N';
-      let bestCount = 0;
-      let bestConf = 0;
-
-      for (const [label, { count, totalConf }] of counts) {
-        if (count > bestCount || (count === bestCount && totalConf > bestConf)) {
-          bestLabel = label;
-          bestCount = count;
-          bestConf = totalConf;
-        }
-      }
-
-      return { label: bestLabel, avgConf: bestConf / beats.length };
-    }
-
-    for (let i = 0; i < chordPerBeat.length; i += BEATS_PER_BAR) {
-      const barEnd = Math.min(i + BEATS_PER_BAR, chordPerBeat.length);
-      const barBeats = chordPerBeat.slice(i, barEnd);
-
-      if (barBeats.length < 2) {
-        // Not enough beats for a full bar — just use the single beat
-        chordPerBar.push({
-          time: barBeats[0].time,
-          label: barBeats[0].label,
-          confidence: barBeats[0].confidence,
-        });
-        continue;
-      }
-
-      // Full-bar majority
-      const fullVote = majorityVote(barBeats);
-
-      // Check for a clear half-bar split
-      const halfPoint = Math.floor(barBeats.length / 2);
-      const firstHalf = barBeats.slice(0, halfPoint);
-      const secondHalf = barBeats.slice(halfPoint);
-
-      const firstVote = majorityVote(firstHalf);
-      const secondVote = majorityVote(secondHalf);
-
-      // A half-bar split is valid if:
-      //  - First and second half have different chords
-      //  - Both halves are internally consistent (non-N chords)
-      //  - Each half's chord covers all its beats (strong agreement)
-      const firstAllAgree = firstHalf.every(b => b.label === firstVote.label || b.label === 'N');
-      const secondAllAgree = secondHalf.every(b => b.label === secondVote.label || b.label === 'N');
-      const shouldSplit =
-        firstVote.label !== secondVote.label &&
-        firstVote.label !== 'N' &&
-        secondVote.label !== 'N' &&
-        firstAllAgree &&
-        secondAllAgree;
-
-      if (shouldSplit) {
-        // Two chords in this bar, split at the half-bar boundary
-        chordPerBar.push({
-          time: firstHalf[0].time,
-          label: firstVote.label,
-          confidence: firstVote.avgConf,
-        });
-        chordPerBar.push({
-          time: secondHalf[0].time,
-          label: secondVote.label,
-          confidence: secondVote.avgConf,
-        });
-      } else {
-        // One chord for the whole bar — majority wins
-        chordPerBar.push({
-          time: barBeats[0].time,
-          label: fullVote.label,
-          confidence: fullVote.avgConf,
-        });
-      }
-    }
-
-    console.log(`   Snapped to ${chordPerBar.length} bar/half-bar segments`);
-
-    // ── 9. Merge consecutive identical chords into events ──
+    // ── 7. Detect and apply chords to bars/half-bars ──
     const events: ChordEvent[] = [];
     let eventIndex = 0;
 
-    if (chordPerBar.length > 0) {
-      let currentLabel = chordPerBar[0].label;
-      let currentStart = chordPerBar[0].time;
-      let confSum = chordPerBar[0].confidence;
-      let confCount = 1;
+    for (const bc of barChromas) {
+      const matchWhole = matchChordInKey(bc.chromaWhole, allowedChords);
+      const matchFirst = matchChordInKey(bc.chromaFirstHalf, allowedChords);
+      const matchSecond = matchChordInKey(bc.chromaSecondHalf, allowedChords);
 
-      for (let i = 1; i < chordPerBar.length; i++) {
-        if (chordPerBar[i].label !== currentLabel) {
-          if (currentLabel !== 'N') {
-            events.push({
-              id: `beat-${eventIndex}`,
-              time_seconds: Math.round(currentStart * 100) / 100,
-              chord_label: currentLabel,
-              confidence: Math.round((confSum / confCount) * 100) / 100,
-            });
-            eventIndex++;
-          }
+      // Split bar if the halves differ, have sufficient confidence, and are recognized
+      const shouldSplit =
+        matchFirst.label !== matchSecond.label &&
+        matchFirst.label !== 'N' &&
+        matchSecond.label !== 'N' &&
+        matchFirst.confidence >= MIN_CONFIDENCE &&
+        matchSecond.confidence >= MIN_CONFIDENCE;
 
-          currentLabel = chordPerBar[i].label;
-          currentStart = chordPerBar[i].time;
-          confSum = 0;
-          confCount = 0;
-        }
-        confSum += chordPerBar[i].confidence;
-        confCount++;
-      }
-
-      if (currentLabel !== 'N') {
+      if (shouldSplit) {
         events.push({
           id: `beat-${eventIndex}`,
-          time_seconds: Math.round(currentStart * 100) / 100,
-          chord_label: currentLabel,
-          confidence: Math.round((confSum / confCount) * 100) / 100,
+          time_seconds: Math.round(bc.startTime * 100) / 100,
+          chord_label: matchFirst.label,
+          confidence: Math.round(matchFirst.confidence * 100) / 100,
         });
+        eventIndex++;
+
+        const midTime = bc.beats.length >= 3 ? bc.beats[2] : (bc.startTime + bc.endTime) / 2;
+        events.push({
+          id: `beat-${eventIndex}`,
+          time_seconds: Math.round(midTime * 100) / 100,
+          chord_label: matchSecond.label,
+          confidence: Math.round(matchSecond.confidence * 100) / 100,
+        });
+        eventIndex++;
+      } else {
+        let label = matchWhole.label;
+        if (label === 'N') {
+          label = key.name; // Fallback to key root
+        }
+        events.push({
+          id: `beat-${eventIndex}`,
+          time_seconds: Math.round(bc.startTime * 100) / 100,
+          chord_label: label,
+          confidence: Math.round(matchWhole.confidence * 100) / 100,
+        });
+        eventIndex++;
       }
     }
 

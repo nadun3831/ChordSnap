@@ -4,9 +4,7 @@
 
 import { Platform } from 'react-native';
 
-// For Android emulator, use 10.0.2.2 instead of localhost
-// For physical device, use your computer's local IP
-const API_BASE = 'http://localhost:3001';
+export const API_BASE = Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001';
 
 export interface Song {
   id: string;

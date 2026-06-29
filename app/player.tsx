@@ -16,7 +16,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import Colors from '../constants/Colors';
 import GlassCard from '../components/GlassCard';
-import { getSong, getSongChords, updateChord, deleteSong, Song, ChordEvent } from '../lib/api';
+import { getSong, getSongChords, updateChord, deleteSong, Song, ChordEvent, API_BASE } from '../lib/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -47,6 +47,17 @@ export default function PlayerScreen() {
   const isMetronomeEnabledRef = useRef(false);
   const metronomeSoundRef = useRef<Audio.Sound | null>(null);
   const lastPlayedBeatRef = useRef(-1);
+  const songRecordRef = useRef<Song | null>(null);
+  const chordsRef = useRef<ChordEvent[]>([]);
+
+  // Sync song and chords state to refs to prevent stale closures in callbacks
+  useEffect(() => {
+    songRecordRef.current = song;
+  }, [song]);
+
+  useEffect(() => {
+    chordsRef.current = chords;
+  }, [chords]);
 
   // Fetch song data
   useEffect(() => {
@@ -91,7 +102,8 @@ export default function PlayerScreen() {
         await metronomeSoundRef.current.setStatusAsync({
           positionMillis: 0,
           shouldPlay: true,
-          pitch: isBeatOne ? 1.4 : 1.0,
+          rate: isBeatOne ? 1.4 : 1.0,
+          shouldCorrectPitch: false,
           volume: isBeatOne ? 1.0 : 0.6,
         });
       }
@@ -100,10 +112,22 @@ export default function PlayerScreen() {
     }
   };
 
-  const syncMetronomeBeat = (timeInSeconds: number) => {
-    const bpm = song?.bpm || 120;
+  const getBeatDetails = () => {
+    const currentSong = songRecordRef.current;
+    const currentChords = chordsRef.current;
+    const bpm = currentSong?.bpm || 120;
     const beatDuration = 60 / bpm;
-    lastPlayedBeatRef.current = Math.floor(timeInSeconds / beatDuration);
+    const firstBeatOffset = currentChords[0]?.time_seconds || 0;
+    return { bpm, beatDuration, firstBeatOffset };
+  };
+
+  const syncMetronomeBeat = (timeInSeconds: number) => {
+    const { beatDuration, firstBeatOffset } = getBeatDetails();
+    if (timeInSeconds < firstBeatOffset) {
+      lastPlayedBeatRef.current = -1;
+    } else {
+      lastPlayedBeatRef.current = Math.floor((timeInSeconds - firstBeatOffset) / beatDuration);
+    }
   };
 
   const loadSongData = async () => {
@@ -137,7 +161,7 @@ export default function PlayerScreen() {
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
       }
-      const audioUrl = `http://localhost:3001/uploads/${song?.audio_url}`;
+      const audioUrl = `${API_BASE}/uploads/${song?.audio_url}`;
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioUrl },
         { shouldPlay: false, progressUpdateIntervalMillis: 50 },
@@ -158,9 +182,12 @@ export default function PlayerScreen() {
       lastUpdateTimestampRef.current = performance.now();
 
       // If we just loaded or jumped, align the beat tracker
-      const bpm = song?.bpm || 120;
-      const beatDuration = 60 / bpm;
-      const currentBeat = Math.floor((status.positionMillis / 1000) / beatDuration);
+      const { beatDuration, firstBeatOffset } = getBeatDetails();
+      const timeInSecs = status.positionMillis / 1000;
+      let currentBeat = -1;
+      if (timeInSecs >= firstBeatOffset) {
+        currentBeat = Math.floor((timeInSecs - firstBeatOffset) / beatDuration);
+      }
       if (Math.abs(lastPlayedBeatRef.current - currentBeat) > 1) {
         lastPlayedBeatRef.current = currentBeat;
       }
@@ -248,15 +275,16 @@ export default function PlayerScreen() {
   useEffect(() => {
     let rafId: number;
     const updateCursor = () => {
-      if (song && song.duration > 0) {
+      const currentSong = songRecordRef.current;
+      if (currentSong && currentSong.duration > 0) {
         let estimatedTime = currentTime;
         if (isPlayingRef.current) {
           const elapsed = (performance.now() - lastUpdateTimestampRef.current) / 1000;
-          estimatedTime = Math.min(song.duration, lastPositionSecondsRef.current + elapsed);
+          estimatedTime = Math.min(currentSong.duration, lastPositionSecondsRef.current + elapsed);
         }
 
-        const playheadX = (estimatedTime / song.duration) * TRACK_WIDTH;
-        const progressPercentVal = (estimatedTime / song.duration) * 100;
+        const playheadX = (estimatedTime / currentSong.duration) * TRACK_WIDTH;
+        const progressPercentVal = (estimatedTime / currentSong.duration) * 100;
 
         // Update playhead & progress fill directly via native style refs for 60fps smoothness
         if (playheadRef.current) {
@@ -276,13 +304,15 @@ export default function PlayerScreen() {
         }
 
         // Metronome beat trigger logic
-        const bpm = song.bpm || 120;
-        const beatDuration = 60 / bpm;
-        const currentBeatIndex = Math.floor(estimatedTime / beatDuration);
+        const { beatDuration, firstBeatOffset } = getBeatDetails();
+        let currentBeatIndex = -1;
+        if (estimatedTime >= firstBeatOffset) {
+          currentBeatIndex = Math.floor((estimatedTime - firstBeatOffset) / beatDuration);
+        }
 
         if (currentBeatIndex !== lastPlayedBeatRef.current) {
           if (isPlayingRef.current && currentBeatIndex > lastPlayedBeatRef.current && (currentBeatIndex - lastPlayedBeatRef.current) < 3) {
-            if (isMetronomeEnabledRef.current) {
+            if (isMetronomeEnabledRef.current && currentBeatIndex >= 0) {
               playMetronomeClick(currentBeatIndex);
             }
           }
@@ -300,7 +330,7 @@ export default function PlayerScreen() {
 
     rafId = requestAnimationFrame(updateCursor);
     return () => cancelAnimationFrame(rafId);
-  }, [song, TRACK_WIDTH, isUserScrolling, currentTime]);
+  }, [TRACK_WIDTH, isUserScrolling, currentTime]);
 
   const openEditModal = (chord: ChordEvent) => {
     setEditingChord(chord);
@@ -586,7 +616,31 @@ export default function PlayerScreen() {
           </View>
         </View>
 
-
+        {/* Metronome quick-toggle bar */}
+        <View style={styles.metronomeToggleContainer}>
+          <TouchableOpacity
+            style={[
+              styles.metronomeButton,
+              isMetronomeEnabled && styles.metronomeButtonActive
+            ]}
+            onPress={() => setIsMetronomeEnabled(!isMetronomeEnabled)}
+            activeOpacity={0.8}
+          >
+            <MaterialIcons
+              name="av-timer"
+              size={20}
+              color={isMetronomeEnabled ? Colors.onPrimary : Colors.primary}
+            />
+            <Text
+              style={[
+                styles.metronomeButtonText,
+                isMetronomeEnabled && styles.metronomeButtonTextActive
+              ]}
+            >
+              Metronome: {isMetronomeEnabled ? 'ACTIVE' : 'OFF'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Playback Controls */}
@@ -1090,5 +1144,34 @@ const styles = StyleSheet.create({
   metronomeActiveBtn: {
     backgroundColor: 'rgba(164, 230, 255, 0.12)',
     borderRadius: 12,
+  },
+  metronomeToggleContainer: {
+    marginTop: 16,
+    width: '100%',
+    alignItems: 'center',
+  },
+  metronomeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(164, 230, 255, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(164, 230, 255, 0.25)',
+    borderRadius: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+  },
+  metronomeButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  metronomeButtonText: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 13,
+    color: Colors.primary,
+  },
+  metronomeButtonTextActive: {
+    color: Colors.onPrimary,
   },
 });
